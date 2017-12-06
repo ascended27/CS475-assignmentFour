@@ -1,11 +1,11 @@
 package rmiproject.ui;
 
-import rmiproject.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import rmiproject.Event;
 
 import java.sql.Timestamp;
 
