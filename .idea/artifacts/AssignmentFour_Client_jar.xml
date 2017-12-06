@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AssignmentFour-Client:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AssignmentFour_Client_jar</output-path>
+    <root id="archive" name="AssignmentFour-Client.jar">
+      <element id="module-output" name="AssignmentFour-Client" />
+    </root>
+  </artifact>
+</component>

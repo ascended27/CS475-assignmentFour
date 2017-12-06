@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="668.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="rmiproject.ui.ClientUiController">
+  <children>
+    <AnchorPane id="content" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="668.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <SplitPane dividerPositions="0.15315315315315314" focusTraversable="true" prefHeight="374.0" prefWidth="596.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <items>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+              <children>
+                <Button fx:id="scheduleButton" layoutX="10.0" layoutY="57.0" mnemonicParsing="false" onMouseClicked="#openScheduleDialog" prefWidth="82.0" text="Schedule" />
+                <Button fx:id="retrieveButton" layoutX="9.0" layoutY="99.0" mnemonicParsing="false" onMouseClicked="#openEvent" prefWidth="82.0" text="Retrieve" />
+                <Button fx:id="openCalendarButton" layoutX="10.0" layoutY="141.0" mnemonicParsing="false" onMouseClicked="#openCalendar" prefWidth="82.0" text="Open Calendar" textAlignment="CENTER" wrapText="true" />
+              </children>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+              <children>
+                <TableView fx:id="table" prefHeight="372.0" prefWidth="502.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <columns>
+                    <TableColumn minWidth="99.0" prefWidth="118.0" text="Owner" fx:id="tableOwner" />
+                    <TableColumn minWidth="133.0" prefWidth="133.0" text="Title" fx:id="tableTitle" />
+                    <TableColumn minWidth="0.0" prefWidth="137.0" text="Start" fx:id="tableStart" />
+                    <TableColumn minWidth="150.0" prefWidth="212.0" text="End" fx:id="tableEnd" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </items>
+        </SplitPane>
+      </children>
+    </AnchorPane>
+  </children>
+</AnchorPane>

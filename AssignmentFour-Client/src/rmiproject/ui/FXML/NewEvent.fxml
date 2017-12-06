@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="500.0" prefWidth="700.0" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/2.2" fx:controller="rmiproject.ui.NewEventController">
+    <children>
+        <GridPane prefHeight="500.0" prefWidth="500.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="New Event" x="0.0" GridPane.columnIndex="0"
+                      GridPane.columnSpan="2147483647" GridPane.halignment="LEFT" GridPane.rowIndex="0">
+                    <font>
+                        <Font size="25.0"/>
+                    </font>
+                    <GridPane.margin>
+                        <Insets left="25.0"/>
+                    </GridPane.margin>
+                </Text>
+                <Label text="Private Event:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                    <GridPane.margin>
+                        <Insets right="55.0" fx:id="x2"/>
+                    </GridPane.margin>
+                </Label>
+                <Label text="Start:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.margin="$x2"
+                       GridPane.rowIndex="3"/>
+                <RadioButton fx:id="yesPrivate" mnemonicParsing="false" text="Yes" GridPane.columnIndex="1"
+                             GridPane.rowIndex="1">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="privateGroup"/>
+                    </toggleGroup>
+                    <GridPane.margin>
+                        <Insets left="10.0"/>
+                    </GridPane.margin>
+                </RadioButton>
+                <RadioButton fx:id="noPrivate" mnemonicParsing="false" selected="true" text="No"
+                             toggleGroup="$privateGroup" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <GridPane.margin>
+                        <Insets left="75.0"/>
+                    </GridPane.margin>
+                </RadioButton>
+                <TextField fx:id="startTF" prefWidth="200.0" promptText="MM/DD/YYYY HH:MM" GridPane.columnIndex="1"
+                           GridPane.rowIndex="3">
+                    <GridPane.margin>
+                        <Insets right="10.0" fx:id="x1"/>
+                    </GridPane.margin>
+                </TextField>
+                <TextField fx:id="stopTF" prefWidth="200.0" promptText="MM/DD/YYYY HH:MM" GridPane.columnIndex="1"
+                           GridPane.margin="$x1" GridPane.rowIndex="4"/>
+                <Label text="Stop:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.margin="$x2"
+                       GridPane.rowIndex="4"/>
+                <Button fx:id="cancelButton" mnemonicParsing="false" onMouseClicked="#cancel" text="Cancel"
+                        GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                    <GridPane.margin>
+                        <Insets/>
+                    </GridPane.margin>
+                </Button>
+                <Button fx:id="savedButton" mnemonicParsing="false" onMouseClicked="#save" prefWidth="67.0" text="Save"
+                        wrapText="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6">
+                    <GridPane.margin>
+                        <Insets right="250.0"/>
+                    </GridPane.margin>
+                </Button>
+                <Label text="Title:" GridPane.columnIndex="0" GridPane.halignment="RIGHT" GridPane.margin="$x2"
+                       GridPane.rowIndex="2"/>
+                <TextField id="startTF" fx:id="titleTF" prefWidth="200.0" promptText="" GridPane.columnIndex="1"
+                           GridPane.rowIndex="2">
+                    <GridPane.margin>
+                        <Insets right="10.0"/>
+                    </GridPane.margin>
+                </TextField>
+                <ListView fx:id="clientList" prefHeight="150.00009999999747" prefWidth="231.0" GridPane.columnIndex="0"
+                          GridPane.rowIndex="5">
+                    <GridPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="25.0"/>
+                    </GridPane.margin>
+                </ListView>
+                <ListView fx:id="selectedClients" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1"
+                          GridPane.rowIndex="5">
+                    <GridPane.margin>
+                        <Insets bottom="10.0" left="30.0" right="10.0" top="25.0"/>
+                    </GridPane.margin>
+                </ListView>
+                <Button fx:id="selectClient" mnemonicParsing="false" onMouseClicked="#moveClientRight" text="&gt;"
+                        GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <GridPane.margin>
+                        <Insets bottom="50.0" left="-5.0"/>
+                    </GridPane.margin>
+                </Button>
+                <Button fx:id="removeClient" mnemonicParsing="false" onMouseClicked="#moveClientLeft" text="&lt;"
+                        GridPane.columnIndex="1" GridPane.rowIndex="5">
+                    <GridPane.margin>
+                        <Insets left="-5.0"/>
+                    </GridPane.margin>
+                </Button>
+                <Label text="Clients" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                    <GridPane.margin>
+                        <Insets left="15.0" top="5.0"/>
+                    </GridPane.margin>
+                </Label>
+                <Label text="Selected Clients" GridPane.columnIndex="1" GridPane.halignment="RIGHT"
+                       GridPane.rowIndex="5" GridPane.valignment="TOP">
+                    <GridPane.margin>
+                        <Insets right="15.0" top="5.0"/>
+                    </GridPane.margin>
+                </Label>
+            </children>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="417.0" minWidth="10.0" prefWidth="340.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" minWidth="10.0" prefWidth="358.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="92.0" minHeight="10.0" prefHeight="57.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="176.0" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="211.0" minHeight="10.0" prefHeight="58.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="249.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="339.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="233.0" minHeight="10.0" prefHeight="170.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="233.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+        </GridPane>
+    </children>
+</AnchorPane>
