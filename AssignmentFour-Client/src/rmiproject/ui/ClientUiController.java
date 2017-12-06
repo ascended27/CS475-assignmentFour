@@ -32,6 +32,8 @@ public class ClientUiController {
     public Button openCalendarButton;
     @FXML
     public TableView table;
+    @FXML
+    public Button refreshButton;
 
     private ObservableList<EventRow> data = FXCollections.observableArrayList();
     private static Util utils;
@@ -45,12 +47,12 @@ public class ClientUiController {
         try {
             System.out.println("Loading Events");
             ArrayList<Event> events = utils.getEventList(utils.getOwner());
-            if(events != null) {
+            if (events != null) {
                 for (Event event : events) {
                     data.add(new EventRow(event.getOwner().getName(), event.getTitle(), event.getStart(), event.getStop()));
                 }
                 System.out.println("Loaded Events");
-            } else{
+            } else {
                 System.out.println("New User");
             }
 
@@ -65,8 +67,8 @@ public class ClientUiController {
             stopsColumn.setCellValueFactory(new PropertyValueFactory<>("stop"));
 
             table.setItems(data);
-        } catch(RemoteException e){
-            AlertBox.display("Error","Failed to load events");
+        } catch (RemoteException e) {
+            AlertBox.display("Error", "Failed to load events");
         }
     }
 
@@ -123,6 +125,25 @@ public class ClientUiController {
             window.setScene(scene);
             window.show();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void refreshTable(MouseEvent mouseEvent) {
+        try {
+            data.clear();
+            System.out.println("Loading Events");
+            ArrayList<Event> events = utils.getEventList(utils.getOwner());
+            if (events != null) {
+                for (Event event : events) {
+                    data.add(new EventRow(event.getOwner().getName(), event.getTitle(), event.getStart(), event.getStop()));
+                }
+                System.out.println("Loaded Events");
+            } else {
+                System.out.println("New User");
+            }
+        } catch (RemoteException e) {
+            AlertBox.display("Error","Failed to refresh table");
             e.printStackTrace();
         }
     }
