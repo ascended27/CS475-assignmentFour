@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AssignmentFour-Client/AssignmentFour-Client.iml" filepath="$PROJECT_DIR$/AssignmentFour-Client/AssignmentFour-Client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AssignmentFour-Server/AssignmentFour-Server.iml" filepath="$PROJECT_DIR$/AssignmentFour-Server/AssignmentFour-Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CS475-assignmentFour.iml" filepath="$PROJECT_DIR$/.idea/CS475-assignmentFour.iml" />
+    </modules>
+  </component>
+</project>
