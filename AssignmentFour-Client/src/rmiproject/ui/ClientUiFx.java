@@ -56,7 +56,7 @@ public class ClientUiFx extends Application {
         grid.add(continueBtn, 1, 1);
         continueBtn.setOnMouseClicked(e -> {
             if (usernameTF.getText().equals("")) {
-                AlertBox.display("Error", "Username is required");
+                AlertBox.display("Error", "Username is required", false);
             } else {
                 String username = usernameTF.getText();
 
@@ -80,7 +80,7 @@ public class ClientUiFx extends Application {
                         }
                     } catch (RemoteException | MalformedURLException e1) {
                         e1.printStackTrace();
-                        AlertBox.display("Error", "Failed to start rmiproject service");
+                        AlertBox.display("Error", "Failed to start rmiproject service", true);
                         System.exit(1);
                     }
 
@@ -90,11 +90,11 @@ public class ClientUiFx extends Application {
                         Scene scene = new Scene(root, 800, 500);
                         primaryStage.setScene(scene);
                     } catch (IOException e1) {
-                        AlertBox.display("Error","Failed to load interface");
+                        AlertBox.display("Error","Failed to load interface", true);
                         e1.printStackTrace();
                     }
                 } else {
-                    AlertBox.display("Error", "Failed to retrieve user: " + username);
+                    AlertBox.display("Error", "Failed to retrieve user: " + username, false);
                 }
 
             }
