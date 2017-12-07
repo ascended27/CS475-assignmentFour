@@ -21,6 +21,7 @@ public class Event implements Serializable {
     private Timestamp start;
     private Timestamp stop;
     private Client owner;
+    private String ownerName;
     private List<Client> attendees;
     private boolean open;
 
@@ -39,11 +40,12 @@ public class Event implements Serializable {
      * @param type
      * @param open
      */
-    public Event(String title, Timestamp start, Timestamp stop, Client owner, List<Client> attendees, boolean type, boolean open) {
+    public Event(String title, Timestamp start, Timestamp stop, Client owner, String ownerName, List<Client> attendees, boolean type, boolean open) {
         this.title = title;
         this.start = start;
         this.stop = stop;
         this.owner = owner;
+        this.ownerName = ownerName;
         this.attendees = attendees;
         this.type = type;
         this.open = open;
@@ -208,5 +210,9 @@ public class Event implements Serializable {
         } finally {
             rwLock.writeLock().unlock();
         }
+    }
+
+    public String getOwnerName() {
+        return ownerName;
     }
 }

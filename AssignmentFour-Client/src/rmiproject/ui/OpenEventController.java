@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import java.rmi.RemoteException;
 import java.sql.Timestamp;
 
 public class OpenEventController {
@@ -35,10 +36,15 @@ public class OpenEventController {
         if (isAllFilledIn()) {
             Timestamp start = utils.convertTime(startTF.getText());
             Timestamp stop = utils.convertTime(stopTF.getText());
-            Event event = new Event("Open Event", start, stop, utils.getOwner(), null, true, true);
-            if (!utils.insertOpenEvent(event)) {
+            try {
+                Event event = new Event("Open Event", start, stop, utils.getOwner(), utils.getOwner().getName(), null, true, true);
+                if (!utils.insertOpenEvent(event)) {
+                    AlertBox.display("Error", "Failed to schedule open event");
+                }
+            } catch (RemoteException ex) {
                 AlertBox.display("Error", "Failed to schedule open event");
             }
+
             Stage stage = (Stage) savedButton.getScene().getWindow();
             stage.close();
         } else {

@@ -89,4 +89,7 @@ public interface Calendar extends Remote {
     ConcurrentLinkedQueue<Event> getEventList() throws RemoteException;
 
     Client getOwner() throws RemoteException;
+
+    void setOwner(Client client) throws RemoteException;
+
 }

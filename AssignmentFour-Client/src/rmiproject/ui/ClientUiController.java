@@ -44,32 +44,28 @@ public class ClientUiController {
         if (utils != null) {
             utils.registerTableList(data);
         }
-        try {
-            System.out.println("Loading Events");
-            ArrayList<Event> events = utils.getEventList(utils.getOwner());
-            if (events != null) {
-                for (Event event : events) {
-                    data.add(new EventRow(event.getOwner().getName(), event.getTitle(), event.getStart(), event.getStop()));
-                }
-                System.out.println("Loaded Events");
-            } else {
-                System.out.println("New User");
+        System.out.println("Loading Events");
+        ArrayList<Event> events = utils.getEventList(utils.getOwner());
+        if (events != null) {
+            for (Event event : events) {
+                data.add(new EventRow(event.getOwnerName(), event.getTitle(), event.getStart(), event.getStop()));
             }
-
-            TableColumn<EventRow, String> ownerColumn = (TableColumn<EventRow, String>) table.getColumns().get(0);
-            TableColumn<EventRow, String> titleColumn = (TableColumn<EventRow, String>) table.getColumns().get(1);
-            TableColumn<EventRow, Timestamp> startColumn = (TableColumn<EventRow, Timestamp>) table.getColumns().get(2);
-            TableColumn<EventRow, Timestamp> stopsColumn = (TableColumn<EventRow, Timestamp>) table.getColumns().get(3);
-
-            ownerColumn.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
-            titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-            startColumn.setCellValueFactory(new PropertyValueFactory<>("start"));
-            stopsColumn.setCellValueFactory(new PropertyValueFactory<>("stop"));
-
-            table.setItems(data);
-        } catch (RemoteException e) {
-            AlertBox.display("Error", "Failed to load events");
+            System.out.println("Loaded Events");
+        } else {
+            System.out.println("New User");
         }
+
+        TableColumn<EventRow, String> ownerColumn = (TableColumn<EventRow, String>) table.getColumns().get(0);
+        TableColumn<EventRow, String> titleColumn = (TableColumn<EventRow, String>) table.getColumns().get(1);
+        TableColumn<EventRow, Timestamp> startColumn = (TableColumn<EventRow, Timestamp>) table.getColumns().get(2);
+        TableColumn<EventRow, Timestamp> stopsColumn = (TableColumn<EventRow, Timestamp>) table.getColumns().get(3);
+
+        ownerColumn.setCellValueFactory(new PropertyValueFactory<>("ownerName"));
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        startColumn.setCellValueFactory(new PropertyValueFactory<>("start"));
+        stopsColumn.setCellValueFactory(new PropertyValueFactory<>("stop"));
+
+        table.setItems(data);
     }
 
     public void openScheduleDialog(MouseEvent mouseEvent) {
@@ -130,21 +126,16 @@ public class ClientUiController {
     }
 
     public void refreshTable(MouseEvent mouseEvent) {
-        try {
-            data.clear();
-            System.out.println("Loading Events");
-            ArrayList<Event> events = utils.getEventList(utils.getOwner());
-            if (events != null) {
-                for (Event event : events) {
-                    data.add(new EventRow(event.getOwner().getName(), event.getTitle(), event.getStart(), event.getStop()));
-                }
-                System.out.println("Loaded Events");
-            } else {
-                System.out.println("New User");
+        data.clear();
+        System.out.println("Loading Events");
+        ArrayList<Event> events = utils.getEventList(utils.getOwner());
+        if (events != null) {
+            for (Event event : events) {
+                data.add(new EventRow(event.getOwnerName(), event.getTitle(), event.getStart(), event.getStop()));
             }
-        } catch (RemoteException e) {
-            AlertBox.display("Error","Failed to refresh table");
-            e.printStackTrace();
+            System.out.println("Loaded Events");
+        } else {
+            System.out.println("New User");
         }
     }
 }

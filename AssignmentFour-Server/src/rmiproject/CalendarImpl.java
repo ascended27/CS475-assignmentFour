@@ -51,12 +51,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class CalendarImpl extends UnicastRemoteObject implements Calendar {
 
     public Client owner;
+    private String ownerName;
     private Thread clockThread;
     private ConcurrentLinkedQueue<Event> eventList;
     public ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     protected CalendarImpl(Client owner) throws RemoteException {
         this.owner = owner;
+        this.ownerName = owner.getName();
         this.eventList = new ConcurrentLinkedQueue<>();
         startClock(owner);
     }
@@ -176,15 +178,15 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
             // If the event is open and has a start before the new event and a stop after the new event then split it
             else if (found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().compareTo(stop) > 0) {
                 // Create two new events that are a split between the event and the new event
-                Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), null, found.isType(), true);
-                Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), null, found.isType(), true);
+                Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), found.getOwnerName(), null, found.isType(), true);
+                Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), found.getOwnerName(), null, found.isType(), true);
                 // Remove the old event
                 eventList.remove(found);
                 // Insert the split open event
                 eventList.add(before);
                 eventList.add(after);
                 // Add the new event
-                eventList.add(new Event(title, start, stop, owner, attendees, false, type));
+                eventList.add(new Event(title, start, stop, owner, owner.getName(), attendees, false, type));
                 return true;
             }
 
@@ -217,12 +219,12 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
                     // If event is within start and stop then we can't create an event
                     if (event.getStart().compareTo(start) < 0 && event.getStart().compareTo(stop) < 0 ||
                             event.getStop().compareTo(start) > 0 && event.getStop().compareTo(stop) > 0) {
-                        eventList.add(new Event("Open Event", start, stop, owner, null, false, true));
+                        eventList.add(new Event("Open Event", start, stop, owner, owner.getName(), null, false, true));
                         return true;
                     }
                 }
             } else {
-                eventList.add(new Event("Open Event", start, stop, owner, null, false, true));
+                eventList.add(new Event("Open Event", start, stop, owner, owner.getName(), null, false, true));
                 return true;
             }
 
@@ -261,6 +263,11 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
         }
     }
 
+    @Override
+    public void setOwner(Client client) throws RemoteException {
+        this.owner = client;
+    }
+
     public boolean startClock(Client owner) throws RemoteException {
         if (owner.getName().equals(this.owner.getName())) {
             Clock c = new Clock(this);
@@ -277,4 +284,11 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
         }
     }
 
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
 }

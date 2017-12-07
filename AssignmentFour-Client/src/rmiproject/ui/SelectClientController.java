@@ -33,10 +33,10 @@ public class SelectClientController {
 
         clientList.setItems(availableClients);
 
-        for (Client client : utils.getUsers()) {
+        for (String client : utils.getUsers()) {
             try {
-                if(!client.getName().equals(utils.getOwner().getName()))
-                    availableClients.add(client.getName());
+                if(!client.equals(utils.getOwner().getName()))
+                    availableClients.add(client);
             } catch (RemoteException e) {
                 AlertBox.display("Error", "Failed to load users");
                 e.printStackTrace();
@@ -53,6 +53,7 @@ public class SelectClientController {
         String selected = (String) clientList.getSelectionModel().getSelectedItem();
         if (selected != null && !selected.equals("")) {
             try {
+                utils.setSelectedClient(selected);
                 Parent root = FXMLLoader.load(getClass().getResource("FXML/ClientCalendar.fxml"));
                 Scene scene = new Scene(root);
                 Stage stage = (Stage) nextButton.getScene().getWindow();

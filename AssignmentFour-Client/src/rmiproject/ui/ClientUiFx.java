@@ -1,5 +1,6 @@
 package rmiproject.ui;
 
+import rmiproject.Calendar;
 import rmiproject.ClientImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,11 +13,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import rmiproject.Event;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientUiFx extends Application {
 
@@ -63,6 +67,17 @@ public class ClientUiFx extends Application {
                         ClientImpl client = null;
                         client = new ClientImpl(username);
                         Naming.rebind("rmi://localhost:6246/ClientService-" + utils.getSelectedClient(), client);
+                        // Refresh the user's calendar's client object
+                        Calendar cal = utils.getCalendar(username);
+                        if(cal != null) {
+                            cal.setOwner(client);
+                            ConcurrentLinkedQueue<Event> events = cal.getEventList();
+                            for(Event event : events) {
+                                if(event.getOwnerName().equals(username)){
+                                    event.setOwner(client);
+                                }
+                            }
+                        }
                     } catch (RemoteException | MalformedURLException e1) {
                         e1.printStackTrace();
                         AlertBox.display("Error", "Failed to start rmiproject service");

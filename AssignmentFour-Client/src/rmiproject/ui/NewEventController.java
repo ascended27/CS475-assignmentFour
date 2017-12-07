@@ -51,10 +51,10 @@ public class NewEventController {
     public void initialize() {
         utils = Util.getInstance();
 
-        for (Client c : utils.getUsers()) {
+        for (String c : utils.getUsers()) {
             try {
-                if (!c.getName().equals(utils.getOwner().getName())) {
-                    notSelectedClientsList.add(c.getName());
+                if (!c.equals(utils.getOwner().getName())) {
+                    notSelectedClientsList.add(c);
                 }
             } catch (RemoteException e) {
                 AlertBox.display("Error", "Failed to load users");
@@ -85,7 +85,7 @@ public class NewEventController {
                     attendees.add(new ClientImpl(user));
                 }
 
-                if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), attendees, isPrivate, false)))
+                if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
                     AlertBox.display("Error", "Failed to next event");
 
                 Stage stage = (Stage) savedButton.getScene().getWindow();

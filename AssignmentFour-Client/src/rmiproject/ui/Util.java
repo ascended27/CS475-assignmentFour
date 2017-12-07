@@ -65,15 +65,10 @@ public class Util {
 
     public Client getClient(String username) {
         try {
-            for (Client c : cm.allUsers()) {
-
-                if (c.getName().equals(username))
-                    return c;
-
-            }
+            return cm.lookup(username);
         } catch (RemoteException e) {
-            AlertBox.display("Error", "Failed to get rmiproject");
             e.printStackTrace();
+            AlertBox.display("Error","Failed to lookup client: " + username);
         }
         return null;
     }
@@ -136,9 +131,9 @@ public class Util {
         }
     }
 
-    public ArrayList<Client> getUsers() {
+    public ArrayList<String> getUsers() {
         try {
-            return (ArrayList<Client>) cm.allUsers();
+            return (ArrayList<String>) cm.allUsers();
         } catch (RemoteException e) {
             return new ArrayList<>();
         }
@@ -146,9 +141,9 @@ public class Util {
 
     public boolean checkUser(String username) {
         try {
-            for (Client user : cm.allUsers()) {
-                if (user.getName().equals(username)) {
-                    owner = user;
+            for (String name : cm.allUsers()) {
+                if (name.equals(username)) {
+                    owner = new ClientImpl(name);
                     break;
                 }
             }
@@ -159,6 +154,16 @@ public class Util {
         } catch (RemoteException e) {
             return false;
         }
+    }
+
+    public Calendar getCalendar(String username){
+        try {
+            return cm.getCalendar(new ClientImpl(username));
+        } catch (RemoteException e) {
+            AlertBox.display("Error","Failed to get calendar for: " + username);
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

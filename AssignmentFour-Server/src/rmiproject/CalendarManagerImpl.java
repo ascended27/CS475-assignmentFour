@@ -23,6 +23,7 @@ import java.util.List;
 public class CalendarManagerImpl extends UnicastRemoteObject implements CalendarManager {
 
     List<CalendarImpl> calendars;
+    List<String> users;
     private static CalendarManagerImpl theInstance;
 
     public Calendar makeCalendar(Client user) {
@@ -32,6 +33,7 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
     protected CalendarManagerImpl() throws RemoteException {
         theInstance = this;
         calendars = new ArrayList<>();
+        users = new ArrayList<>();
         System.out.println("New CalendarManager");
     }
 
@@ -56,13 +58,14 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
         CalendarImpl toReturn = null;
         System.out.println("New Client Request: " + user.getName());
         for (CalendarImpl cal : calendars) {
-            if (cal.getOwner().getName().equals(user.getName())) {
+            if (cal.getOwnerName().equals(user.getName())) {
                 toReturn = cal;
             }
         }
 
         if (toReturn == null) {
             toReturn = new CalendarImpl(user);
+            users.add(user.getName());
             System.out.println("New User: " + user.getName());
             calendars.add(toReturn);
         }
@@ -72,12 +75,21 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
     }
 
     @Override
-    public List<Client> allUsers() throws RemoteException {
-        List<Client> users = new ArrayList<>();
-
-        for (Calendar calendar : calendars)
-            users.add(calendar.getOwner());
-
+    public List<String> allUsers() throws RemoteException {
         return users;
     }
+
+    public Client lookup(String username) throws RemoteException{
+        for(Calendar cal : calendars){
+            try {
+                if(cal.getOwner().getName().equals(username))
+                    return cal.getOwner();
+            } catch (RemoteException e) {
+                System.out.println("Unable to get username");
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 }
