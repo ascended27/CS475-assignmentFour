@@ -132,7 +132,7 @@ public class Util {
 
     public Event retrieveEvent(Timestamp start, Timestamp stop) {
         try {
-            return cm.getCalendar(owner).retrieveEvent(start, stop);
+            return cm.getCalendar(owner).retrieveEvent(owner.getName(),start, stop);
         } catch (RemoteException e) {
             return null;
         }
@@ -140,7 +140,7 @@ public class Util {
 
     public Event retrieveEventForClient(String username, Timestamp start, Timestamp stop) {
         try {
-            return cm.getCalendar(username).retrieveEvent(start, stop);
+            return cm.getCalendar(username).retrieveEvent(username,start, stop);
         } catch (RemoteException e) {
             return null;
         }

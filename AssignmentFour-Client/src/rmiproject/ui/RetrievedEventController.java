@@ -58,62 +58,74 @@ public class RetrievedEventController {
                     if (utils.getSelectedClient() == null)
                         utils.setSelectedClient(utils.getOwner().getName());
                     event = utils.retrieveEventForClient(utils.getSelectedClient(), utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
-                    if (!event.isType() && !event.getOwnerName().equals(utils.getOwner().getName())) {
-                        titleText.setText("Private Event");
-                        titleTextField.setText("Private Event");
-                    } else if(event.getAttendees() != null &&event.getAttendees().size() != 0){
-                        if(!event.getOwnerName().equals(utils.getOwner().getName()) && !event.getAttendees().contains(utils.getOwner().getName())){
-                            titleText.setText("Group Event");
-                            titleTextField.setText("Group Event");
-                            ownerText.setVisible(false);
+                    if (event != null) {
+                        if (!event.isType() && !event.getOwnerName().equals(utils.getOwner().getName())) {
+                            titleText.setText("Private Event");
+                            titleTextField.setText("Private Event");
+                        } else if (event.getAttendees() != null && event.getAttendees().size() != 0) {
+                            if (!event.getOwnerName().equals(utils.getOwner().getName()) && !event.getAttendees().contains(utils.getOwner().getName())) {
+                                titleText.setText("Group Event");
+                                titleTextField.setText("Group Event");
+                                ownerText.setVisible(false);
+                                titleTextField.setVisible(false);
+                                startTextField.setVisible(false);
+                                stopTextField.setVisible(false);
+                                attendees.setVisible(false);
+                                yesRadio.setVisible(false);
+                                noRadio.setVisible(false);
+                            }
+                        } else {
+                            titleText.setText(event.getTitle());
+                            titleTextField.setText(event.getTitle());
+                        }
+                        if (!event.isType()) {
+                            yesRadio.setSelected(true);
+                        } else noRadio.setSelected(true);
+                        ownerText.setText(event.getOwnerName());
+                        startText.setText(event.getStart().toString());
+                        stopText.setText(event.getStop().toString());
+                        startTextField.setText(event.getStart().toString());
+                        stopTextField.setText(event.getStop().toString());
+                        List<String> aList = event.getAttendees();
+                        if (aList != null) {
+                            attendeeList.addAll(event.getAttendees());
+                            attendees.setItems(attendeeList);
+                        }
+                        // This client owns the event allow edit
+                        if (event.getOwnerName().equals(utils.getOwner().getName())) {
+                            titleText.setVisible(false);
+                            startText.setVisible(false);
+                            stopText.setVisible(false);
+                        } else if (event.getAttendees() != null && event.getAttendees().contains(utils.getOwner().getName())) { // This client is an attendee
+                            titleText.setVisible(false);
+                            startText.setVisible(false);
+                            stopText.setVisible(false);
+                        } else { // The client isn't the owner and isn't in attendees
                             titleTextField.setVisible(false);
                             startTextField.setVisible(false);
                             stopTextField.setVisible(false);
-                            attendees.setVisible(false);
-                            yesRadio.setVisible(false);
-                            noRadio.setVisible(false);
-
+                            yesRadio.setDisable(true);
+                            noRadio.setDisable(true);
+                            saveButton.setVisible(false);
+                            saveButton.setDisable(true);
                         }
+
                     } else {
-                        titleText.setText(event.getTitle());
-                        titleTextField.setText(event.getTitle());
-                    }
-                    if(!event.isType()){
-                        yesRadio.setSelected(true);
-                    } else noRadio.setSelected(true);
-                    ownerText.setText(event.getOwnerName());
-                    startText.setText(event.getStart().toString());
-                    stopText.setText(event.getStop().toString());
-                    startTextField.setText(event.getStart().toString());
-                    stopTextField.setText(event.getStop().toString());
-                    List<String> aList = event.getAttendees();
-                    if (aList != null) {
-                        attendeeList.addAll(event.getAttendees());
-                        attendees.setItems(attendeeList);
-                    }
-                    // This client owns the event allow edit
-                    if (event.getOwnerName().equals(utils.getOwner().getName())) {
-                        titleText.setVisible(false);
-                        startText.setVisible(false);
-                        stopText.setVisible(false);
-                    } else if(event.getAttendees() != null && event.getAttendees().contains(utils.getOwner().getName())) { // This client is an attendee
-                        titleText.setVisible(false);
-                        startText.setVisible(false);
-                        stopText.setVisible(false);
-                    } else{ // The client isn't the owner and isn't in attendees
+                        startText.setText(er.getStart().toString());
+                        stopText.setText(er.getStop().toString());
+                        ownerText.setVisible(false);
                         titleTextField.setVisible(false);
                         startTextField.setVisible(false);
                         stopTextField.setVisible(false);
-                        yesRadio.setDisable(true);
-                        noRadio.setDisable(true);
-                        saveButton.setVisible(false);
-                        saveButton.setDisable(true);
+                        attendees.setVisible(false);
+                        yesRadio.setVisible(false);
+                        noRadio.setVisible(false);
+                        er.getStop();
+                        AlertBox.display("Error", "No event selected", false);
                     }
                 } catch (RemoteException e) {
-                    AlertBox.display("Error", e.getMessage(),false);
+                    AlertBox.display("Error", e.getMessage(), false);
                 }
-            } else {
-                AlertBox.display("Error", "No event selected",false);
             }
         }
     }

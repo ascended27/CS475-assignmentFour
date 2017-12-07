@@ -70,13 +70,14 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
      * @param end   The ending time of the event to retrieve
      * @return The event
      */
-    public Event retrieveEvent(Timestamp start, Timestamp end) throws RemoteException {
+    public Event retrieveEvent(String userName, Timestamp start, Timestamp end) throws RemoteException {
         try {
             rwLock.readLock().lock();
             Event toReturn = null;
             for (Event event : eventList) {
                 if (event.getStart().equals(start) && event.getStop().equals(end)) {
-                    toReturn = event;
+                    if(event.getOwnerName().equals(userName) || event.getAttendees().contains(userName))
+                        toReturn = event;
                     break;
                 }
             }
@@ -235,7 +236,7 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
 
     public boolean editEvent(String ownerName, String title, Timestamp start, Timestamp stop, Timestamp newStart, Timestamp newStop, boolean type) throws RemoteException {
         CalendarManager cm = CalendarManagerImpl.getInstance();
-        Event toEdit = retrieveEvent(start, stop);
+        Event toEdit = retrieveEvent(ownerName, start, stop);
         boolean canSchedule = false;
 
         // If the owner or an attendee isn't the one editing then quit

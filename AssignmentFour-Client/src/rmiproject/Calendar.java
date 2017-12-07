@@ -54,7 +54,7 @@ public interface Calendar extends Remote {
      * @param end   The stop time of the event to retrieve
      * @return The event
      */
-    Event retrieveEvent(Timestamp start, Timestamp end) throws RemoteException;
+    Event retrieveEvent(String userName, Timestamp start, Timestamp end) throws RemoteException;
 
     /**
      * Schedules an event with a list of attendees specified by users
