@@ -91,14 +91,9 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
     }
 
     public Client lookup(String username) throws RemoteException{
-        for(Calendar cal : calendars){
-            try {
-                if(cal.getOwner().getName().equals(username))
-                    return cal.getOwner();
-            } catch (RemoteException e) {
-                System.out.println("Unable to get username");
-                e.printStackTrace();
-            }
+        for(CalendarImpl cal : calendars){
+            if(cal.getOwnerName().equals(username))
+                return cal.getOwner();
         }
         return null;
     }

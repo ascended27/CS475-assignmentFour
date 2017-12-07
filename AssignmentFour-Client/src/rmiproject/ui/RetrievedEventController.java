@@ -44,7 +44,7 @@ public class RetrievedEventController {
                 try {
                     event = utils.retrieveEventForClient(utils.getSelectedClient(),utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
                     titleText.setText(event.getTitle());
-                    ownerText.setText(event.getOwner().getName());
+                    ownerText.setText(event.getOwnerName());
                     startText.setText(event.getStart().toString());
                     stopText.setText(event.getStop().toString());
                     List<Client> aList = event.getAttendees();

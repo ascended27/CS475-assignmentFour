@@ -241,12 +241,12 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
                     // If event is within start and stop then we can't create an event
                     if (event.getStart().compareTo(start) < 0 && event.getStart().compareTo(stop) < 0 ||
                             event.getStop().compareTo(start) > 0 && event.getStop().compareTo(stop) > 0) {
-                        eventList.add(new Event("Open Event", start, stop, owner, owner.getName(), null, false, true));
+                        eventList.add(new Event("Open Event", start, stop, owner, owner.getName(), null, true, true));
                         return true;
                     }
                 }
             } else {
-                eventList.add(new Event("Open Event", start, stop, owner, owner.getName(), null, false, true));
+                eventList.add(new Event("Open Event", start, stop, owner, owner.getName(), null, true, true));
                 return true;
             }
 
