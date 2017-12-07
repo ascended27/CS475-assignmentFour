@@ -99,7 +99,7 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
      * @throws RemoteException If the connection was lost
      */
     //TODO: Test already made. Debug equality of Events that are made because of a group Event
-    public boolean scheduleEvent(Client owner, List<Client> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException {
+    public boolean scheduleEvent(Client owner, List<String> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException {
         try {
             rwLock.writeLock().lock();
             boolean canSchedule = false;
@@ -135,7 +135,7 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
             if (attendees != null && attendees.size() != 0 && owner.getName().equals(this.owner.getName())) {
                 CalendarManagerImpl cm = (CalendarManagerImpl) CalendarManagerImpl.getInstance();
 
-                for (Client c : attendees) {
+                for (String c : attendees) {
                     calendars.add(cm.getCalendar(c));
                 }
 
@@ -185,10 +185,10 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
                 eventList.add(before);
                 eventList.add(after);
                 // Add the new event
-                eventList.add(new Event(title, start, stop, owner, owner.getName(), attendees, false, type));
+                eventList.add(new Event(title, start, stop, owner, owner.getName(), attendees, type, false));
                 return true;
-            } else if(found.isOpen() && found.getStart().equals(start) && found.getStop().compareTo(stop) > 0){
-                Event after = new Event(found.getTitle(),stop,found.getStop(),found.getOwner(),found.getOwnerName(),attendees,false,type);
+            } else if (found.isOpen() && found.getStart().equals(start) && found.getStop().compareTo(stop) > 0) {
+                Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), found.getOwnerName(), attendees, found.isType(), true);
                 found.setOwner(owner);
                 found.setOwnerName(owner.getName());
                 found.setStop(stop);
@@ -198,9 +198,9 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
                 found.setOpen(false);
                 eventList.add(after);
                 return true;
-            } else if(found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().equals(stop)){
-                Event before = new Event(found.getTitle(),found.getStart(),stop,found.getOwner(),found.getOwnerName(),attendees,false,type);
-                found.setStop(start);
+            } else if (found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().equals(stop)) {
+                Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), found.getOwnerName(), attendees, found.isType(), true);
+                found.setStart(start);
                 found.setOwner(owner);
                 found.setOwnerName(owner.getName());
                 found.setStop(stop);

@@ -78,11 +78,11 @@ public class NewEventController {
                 String title = titleTF.getText();
                 Timestamp start = utils.convertTime(startTF.getText());
                 Timestamp stop = utils.convertTime(stopTF.getText());
-                boolean isPrivate = yesPrivate.isSelected();
-                ArrayList<Client> attendees = new ArrayList<>();
+                boolean isPrivate = !yesPrivate.isSelected();
+                ArrayList<String> attendees = new ArrayList<>();
 
                 for (String user : selectedClientsList) {
-                    attendees.add(new ClientImpl(user));
+                    attendees.add(user);
                 }
 
                 if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))

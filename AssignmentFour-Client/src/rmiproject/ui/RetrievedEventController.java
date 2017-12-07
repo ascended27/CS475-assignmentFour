@@ -42,15 +42,20 @@ public class RetrievedEventController {
             EventRow er = utils.getRetrievedEventRow();
             if (er != null) {
                 try {
+                    if(utils.getSelectedClient() == null)
+                        utils.setSelectedClient(utils.getOwner().getName());
                     event = utils.retrieveEventForClient(utils.getSelectedClient(),utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
-                    titleText.setText(event.getTitle());
+                    if(!event.isType() && event.getOwnerName().equals(utils.getOwner().getName()))
+                        titleText.setText("Private Event");
+                    else
+                        titleText.setText(event.getTitle());
                     ownerText.setText(event.getOwnerName());
                     startText.setText(event.getStart().toString());
                     stopText.setText(event.getStop().toString());
-                    List<Client> aList = event.getAttendees();
+                    List<String> aList = event.getAttendees();
                     if (aList != null) {
-                        for (Client c : event.getAttendees()) {
-                            attendeeList.add(c.getName());
+                        for (String c : event.getAttendees()) {
+                            attendeeList.add(c);
                         }
                     }
                 } catch (RemoteException e) {

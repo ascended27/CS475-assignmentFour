@@ -68,7 +68,7 @@ public interface Calendar extends Remote {
      * @return
      * @throws RemoteException
      */
-    boolean scheduleEvent(Client owner, List<Client> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException;
+    boolean scheduleEvent(Client owner, List<String> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException;
 
     /**
      * Schedules an open event

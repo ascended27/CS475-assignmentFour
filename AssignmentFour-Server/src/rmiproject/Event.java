@@ -22,7 +22,7 @@ public class Event implements Serializable {
     private Timestamp stop;
     private Client owner;
     private String ownerName;
-    private List<Client> attendees;
+    private List<String> attendees;
     private boolean open;
 
     // True for public False for private
@@ -40,7 +40,7 @@ public class Event implements Serializable {
      * @param type
      * @param open
      */
-    public Event(String title, Timestamp start, Timestamp stop, Client owner, String ownerName, List<Client> attendees, boolean type, boolean open) {
+    public Event(String title, Timestamp start, Timestamp stop, Client owner, String ownerName, List<String> attendees, boolean type, boolean open) {
         this.title = title;
         this.start = start;
         this.stop = stop;
@@ -132,8 +132,8 @@ public class Event implements Serializable {
         }
     }
 
-    public List<Client> getAttendees() {
-        List<Client> toReturn;
+    public List<String> getAttendees() {
+        List<String> toReturn;
         try {
             rwLock.readLock().lock();
             toReturn = attendees;
@@ -143,7 +143,7 @@ public class Event implements Serializable {
         }
     }
 
-    public void setAttendees(List<Client> attendees) {
+    public void setAttendees(List<String> attendees) {
         try {
             rwLock.writeLock().lock();
             this.attendees = attendees;
