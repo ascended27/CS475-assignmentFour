@@ -66,12 +66,11 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
     /**
      * Retrieves event for passed user with passed start and end
      *
-     * @param user  An attendee
      * @param start The starting time of the event to retrieve
      * @param end   The ending time of the event to retrieve
      * @return The event
      */
-    public Event retrieveEvent(Client user, Timestamp start, Timestamp end) throws RemoteException {
+    public Event retrieveEvent(Timestamp start, Timestamp end) throws RemoteException {
         try {
             rwLock.readLock().lock();
             Event toReturn = null;

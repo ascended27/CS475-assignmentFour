@@ -70,7 +70,18 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
             calendars.add(toReturn);
         }
 
+        return toReturn;
+    }
 
+    public CalendarImpl getCalendar(String username) throws RemoteException {
+
+        CalendarImpl toReturn = null;
+        System.out.println("New Client Request: " + username);
+        for (CalendarImpl cal : calendars) {
+            if (cal.getOwnerName().equals(username)) {
+                toReturn = cal;
+            }
+        }
         return toReturn;
     }
 

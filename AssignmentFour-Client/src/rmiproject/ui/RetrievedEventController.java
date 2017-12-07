@@ -42,7 +42,7 @@ public class RetrievedEventController {
             EventRow er = utils.getRetrievedEventRow();
             if (er != null) {
                 try {
-                    event = utils.retrieveEvent(utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
+                    event = utils.retrieveEventForClient(utils.getSelectedClient(),utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
                     titleText.setText(event.getTitle());
                     ownerText.setText(event.getOwner().getName());
                     startText.setText(event.getStart().toString());

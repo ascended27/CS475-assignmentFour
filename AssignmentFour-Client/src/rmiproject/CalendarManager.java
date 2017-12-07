@@ -32,6 +32,8 @@ public interface CalendarManager extends Remote {
      */
     Calendar getCalendar(Client user) throws RemoteException;
 
+    Calendar getCalendar(String username) throws RemoteException;
+
     Calendar makeCalendar(Client user) throws RemoteException;
 
     List<String> allUsers() throws RemoteException;

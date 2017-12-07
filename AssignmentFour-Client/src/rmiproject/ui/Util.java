@@ -110,8 +110,16 @@ public class Util {
 
     public Event retrieveEvent(Timestamp start, Timestamp stop) {
         try {
-            return cm.getCalendar(owner).retrieveEvent(owner, start, stop);
+            return cm.getCalendar(owner).retrieveEvent(start, stop);
         } catch (RemoteException e) {
+            return null;
+        }
+    }
+
+    public Event retrieveEventForClient(String username, Timestamp start, Timestamp stop){
+        try{
+            return cm.getCalendar(username).retrieveEvent(start,stop);
+        } catch (RemoteException e){
             return null;
         }
     }

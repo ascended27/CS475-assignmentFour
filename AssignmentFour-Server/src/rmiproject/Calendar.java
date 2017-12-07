@@ -50,12 +50,11 @@ public interface Calendar extends Remote {
     /**
      * Retrieves event for passed user with passed start and end
      *
-     * @param user  An attendee
      * @param start The start time of the event to retrieve
      * @param end   The stop time of the event to retrieve
      * @return The event
      */
-    Event retrieveEvent(Client user, Timestamp start, Timestamp end) throws RemoteException;
+    Event retrieveEvent(Timestamp start, Timestamp end) throws RemoteException;
 
     /**
      * Schedules an event with a list of attendees specified by users
