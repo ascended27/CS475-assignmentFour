@@ -77,7 +77,7 @@ public class NewEventController {
             try {
                 String title = titleTF.getText();
                 Timestamp start = utils.convertTime(startTF.getText());
-                Timestamp stop = utils.convertTime(startTF.getText());
+                Timestamp stop = utils.convertTime(stopTF.getText());
                 boolean isPrivate = yesPrivate.isSelected();
                 ArrayList<Client> attendees = new ArrayList<>();
 
@@ -86,12 +86,12 @@ public class NewEventController {
                 }
 
                 if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
-                    AlertBox.display("Error", "Failed to next event");
+                    AlertBox.display("Error", "Failed to save event");
 
                 Stage stage = (Stage) savedButton.getScene().getWindow();
                 stage.close();
             } catch (RemoteException e) {
-                AlertBox.display("Error", "Failed to next event");
+                AlertBox.display("Error", "Failed to save event");
             }
         }
     }

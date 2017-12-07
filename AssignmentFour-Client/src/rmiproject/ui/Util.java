@@ -82,7 +82,7 @@ public class Util {
                 if (toReturn && observableList != null) {
                     observableList.clear();
                     for (Event event : cm.getCalendar(owner).getEventList()) {
-                        EventRow er = new EventRow(event.getOwner().getName(), event.getTitle(), event.getStart(), event.getStop());
+                        EventRow er = new EventRow(event.getOwnerName(), event.getTitle(), event.getStart(), event.getStop());
                         observableList.addAll(er);
                     }
                 }

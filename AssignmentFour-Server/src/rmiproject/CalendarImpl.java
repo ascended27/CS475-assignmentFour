@@ -187,6 +187,29 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
                 // Add the new event
                 eventList.add(new Event(title, start, stop, owner, owner.getName(), attendees, false, type));
                 return true;
+            } else if(found.isOpen() && found.getStart().equals(start) && found.getStop().compareTo(stop) > 0){
+                Event after = new Event(found.getTitle(),stop,found.getStop(),found.getOwner(),found.getOwnerName(),attendees,false,type);
+                found.setOwner(owner);
+                found.setOwnerName(owner.getName());
+                found.setStop(stop);
+                found.setAttendees(attendees);
+                found.setTitle(title);
+                found.setType(type);
+                found.setOpen(false);
+                eventList.add(after);
+                return true;
+            } else if(found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().equals(stop)){
+                Event before = new Event(found.getTitle(),found.getStart(),stop,found.getOwner(),found.getOwnerName(),attendees,false,type);
+                found.setStop(start);
+                found.setOwner(owner);
+                found.setOwnerName(owner.getName());
+                found.setStop(stop);
+                found.setAttendees(attendees);
+                found.setTitle(title);
+                found.setType(type);
+                found.setOpen(false);
+                eventList.add(before);
+                return true;
             }
 
             return false;
