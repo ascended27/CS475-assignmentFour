@@ -61,6 +61,19 @@ public class RetrievedEventController {
                     if (!event.isType() && !event.getOwnerName().equals(utils.getOwner().getName())) {
                         titleText.setText("Private Event");
                         titleTextField.setText("Private Event");
+                    } else if(event.getAttendees() != null &&event.getAttendees().size() != 0){
+                        if(!event.getOwnerName().equals(utils.getOwner().getName()) && !event.getAttendees().contains(utils.getOwner().getName())){
+                            titleText.setText("Group Event");
+                            titleTextField.setText("Group Event");
+                            ownerText.setVisible(false);
+                            titleTextField.setVisible(false);
+                            startTextField.setVisible(false);
+                            stopTextField.setVisible(false);
+                            attendees.setVisible(false);
+                            yesRadio.setVisible(false);
+                            noRadio.setVisible(false);
+
+                        }
                     } else {
                         titleText.setText(event.getTitle());
                         titleTextField.setText(event.getTitle());
