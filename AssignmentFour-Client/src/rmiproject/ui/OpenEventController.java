@@ -39,16 +39,16 @@ public class OpenEventController {
             try {
                 Event event = new Event("Open Event", start, stop, utils.getOwner(), utils.getOwner().getName(), null, true, true);
                 if (!utils.insertOpenEvent(event)) {
-                    AlertBox.display("Error", "Failed to schedule open event");
+                    AlertBox.display("Error", "Failed to schedule open event",false);
                 }
             } catch (RemoteException ex) {
-                AlertBox.display("Error", "Failed to schedule open event");
+                AlertBox.display("Error", "Failed to schedule open event",false);
             }
 
             Stage stage = (Stage) savedButton.getScene().getWindow();
             stage.close();
         } else {
-            AlertBox.display("Error", "All fields must be filled in");
+            AlertBox.display("Error", "All fields must be filled in",false);
         }
     }
 

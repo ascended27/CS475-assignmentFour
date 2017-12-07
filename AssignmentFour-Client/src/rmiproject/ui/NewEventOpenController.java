@@ -43,7 +43,7 @@ public class NewEventOpenController {
             stage.close();
             window.show();
         } catch (IOException e) {
-            AlertBox.display("Error", "Failed to open new event");
+            AlertBox.display("Error", "Failed to open new event",false);
         }
     }
 

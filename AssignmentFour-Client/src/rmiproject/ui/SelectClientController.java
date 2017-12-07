@@ -38,7 +38,7 @@ public class SelectClientController {
                 if(!client.equals(utils.getOwner().getName()))
                     availableClients.add(client);
             } catch (RemoteException e) {
-                AlertBox.display("Error", "Failed to load users");
+                AlertBox.display("Error", "Failed to load users",false);
                 e.printStackTrace();
             }
         }
@@ -59,11 +59,11 @@ public class SelectClientController {
                 Stage stage = (Stage) nextButton.getScene().getWindow();
                 stage.setScene(scene);
             } catch (IOException e) {
-                AlertBox.display("Error", "Failed to load calendar for " + utils.getSelectedClient());
+                AlertBox.display("Error", "Failed to load calendar for " + utils.getSelectedClient(),false);
                 e.printStackTrace();
             }
         } else{
-            AlertBox.display("Error","Must select a user");
+            AlertBox.display("Error","Must select a user",false);
         }
     }
 }

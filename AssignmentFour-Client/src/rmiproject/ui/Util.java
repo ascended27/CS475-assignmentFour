@@ -68,7 +68,7 @@ public class Util {
             return cm.lookup(username);
         } catch (RemoteException e) {
             e.printStackTrace();
-            AlertBox.display("Error","Failed to lookup client: " + username);
+            AlertBox.display("Error", "Failed to lookup client: " + username,false);
         }
         return null;
     }
@@ -77,7 +77,7 @@ public class Util {
         try {
             if (owner != null) {
 
-                boolean toReturn = cm.getCalendar(owner).scheduleEvent(e.getOwner(), e.getAttendees(), e.getTitle(), e.getStart(), e.getStop(), e.isType());
+                boolean toReturn = cm.getCalendar(owner).scheduleEvent(e.getOwner(),e.getOwnerName(), e.getAttendees(), e.getTitle(), e.getStart(), e.getStop(), e.isType());
 
                 if (toReturn && observableList != null) {
                     observableList.clear();
@@ -90,8 +90,30 @@ public class Util {
                 return toReturn;
             } else return false;
         } catch (RemoteException ex) {
+            ex.printStackTrace();
             return false;
         }
+    }
+
+    public boolean editEvent(Event e, Timestamp oldStart, Timestamp oldStop) {
+        if (owner != null) {
+            try {
+                boolean toReturn = cm.getCalendar(owner).editEvent(e.getOwnerName(), e.getTitle(), oldStart, oldStop, e.getStart(), e.getStop(), e.isType());
+
+                if (toReturn && observableList != null) {
+                    observableList.clear();
+                    for (Event event : cm.getCalendar(owner).getEventList()) {
+                        EventRow er = new EventRow(event.getOwnerName(), event.getTitle(), event.getStart(), event.getStop());
+                        observableList.addAll(er);
+                    }
+                }
+                return toReturn;
+            } catch (RemoteException e1) {
+                e1.printStackTrace();
+                return false;
+            }
+        }
+        return false;
     }
 
     public boolean insertOpenEvent(Event e) {
@@ -116,10 +138,10 @@ public class Util {
         }
     }
 
-    public Event retrieveEventForClient(String username, Timestamp start, Timestamp stop){
-        try{
-            return cm.getCalendar(username).retrieveEvent(start,stop);
-        } catch (RemoteException e){
+    public Event retrieveEventForClient(String username, Timestamp start, Timestamp stop) {
+        try {
+            return cm.getCalendar(username).retrieveEvent(start, stop);
+        } catch (RemoteException e) {
             return null;
         }
     }
@@ -164,11 +186,11 @@ public class Util {
         }
     }
 
-    public Calendar getCalendar(String username){
+    public Calendar getCalendar(String username) {
         try {
             return cm.getCalendar(new ClientImpl(username));
         } catch (RemoteException e) {
-            AlertBox.display("Error","Failed to get calendar for: " + username);
+            AlertBox.display("Error", "Failed to get calendar for: " + username,false);
             e.printStackTrace();
         }
         return null;
@@ -177,7 +199,12 @@ public class Util {
 
     public Timestamp convertTime(String time) {
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+            SimpleDateFormat dateFormat;
+            if(time.contains("/"))
+                dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+            else if(time.contains("-"))
+                    return Timestamp.valueOf(time);
+            else return null;
             Timestamp toReturn;
             Date parsedDate;
             parsedDate = dateFormat.parse(time);

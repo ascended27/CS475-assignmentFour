@@ -68,7 +68,7 @@ public interface Calendar extends Remote {
      * @return
      * @throws RemoteException
      */
-    boolean scheduleEvent(Client owner, List<String> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException;
+    boolean scheduleEvent(Client owner, String ownerName, List<String> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException;
 
     /**
      * Schedules an open event
@@ -81,6 +81,8 @@ public interface Calendar extends Remote {
      */
     boolean insertOpenEvent(Client owner, Timestamp start, Timestamp stop) throws RemoteException;
 
+    public boolean editEvent(String ownerName, String title, Timestamp start, Timestamp stop, Timestamp newStart, Timestamp newStop, boolean type) throws RemoteException;
+
     boolean startClock(Client owner) throws RemoteException;
 
     void killClock(Client owner) throws RemoteException;
@@ -90,4 +92,5 @@ public interface Calendar extends Remote {
     Client getOwner() throws RemoteException;
 
     void setOwner(Client client) throws RemoteException;
+
 }

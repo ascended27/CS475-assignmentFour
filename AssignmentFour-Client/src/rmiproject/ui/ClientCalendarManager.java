@@ -65,7 +65,7 @@ public class ClientCalendarManager {
             table.setItems(data);
             } catch (RemoteException e) {
                 e.printStackTrace();
-                AlertBox.display("Error","Failed to load events");
+                AlertBox.display("Error","Failed to load events",false);
             }
         }
     }
@@ -89,7 +89,7 @@ public class ClientCalendarManager {
                 window.show();
             }
         } catch (IOException e) {
-            AlertBox.display("Error", "Failed to load event");
+            AlertBox.display("Error", "Failed to load event",false);
             e.printStackTrace();
         }
     }

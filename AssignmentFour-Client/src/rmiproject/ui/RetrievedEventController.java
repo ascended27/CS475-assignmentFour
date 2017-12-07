@@ -1,12 +1,11 @@
 package rmiproject.ui;
 
+import javafx.scene.control.*;
 import rmiproject.Client;
 import rmiproject.Event;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -17,17 +16,31 @@ import java.util.List;
 
 public class RetrievedEventController {
     @FXML
-    public Text titleText;
-    @FXML
     public Text ownerText;
+    @FXML
+    public Text titleText;
     @FXML
     public Text startText;
     @FXML
     public Text stopText;
     @FXML
+    public TextField titleTextField;
+    @FXML
+    public TextField startTextField;
+    @FXML
+    public TextField stopTextField;
+    @FXML
     public ListView attendees;
     @FXML
     public Button closeButton;
+    @FXML
+    public Button saveButton;
+    @FXML
+    public RadioButton yesRadio;
+    @FXML
+    public ToggleGroup privateGroup;
+    @FXML
+    public RadioButton noRadio;
 
     private Util utils;
     private Timestamp start;
@@ -42,33 +55,67 @@ public class RetrievedEventController {
             EventRow er = utils.getRetrievedEventRow();
             if (er != null) {
                 try {
-                    if(utils.getSelectedClient() == null)
+                    if (utils.getSelectedClient() == null)
                         utils.setSelectedClient(utils.getOwner().getName());
-                    event = utils.retrieveEventForClient(utils.getSelectedClient(),utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
-                    if(!event.isType() && event.getOwnerName().equals(utils.getOwner().getName()))
+                    event = utils.retrieveEventForClient(utils.getSelectedClient(), utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
+                    if (!event.isType() && !event.getOwnerName().equals(utils.getOwner().getName())) {
                         titleText.setText("Private Event");
-                    else
+                        titleTextField.setText("Private Event");
+                    } else {
                         titleText.setText(event.getTitle());
+                        titleTextField.setText(event.getTitle());
+                    }
+                    if(!event.isType()){
+                        yesRadio.setSelected(true);
+                    } else noRadio.setSelected(true);
                     ownerText.setText(event.getOwnerName());
                     startText.setText(event.getStart().toString());
                     stopText.setText(event.getStop().toString());
+                    startTextField.setText(event.getStart().toString());
+                    stopTextField.setText(event.getStop().toString());
                     List<String> aList = event.getAttendees();
                     if (aList != null) {
-                        for (String c : event.getAttendees()) {
-                            attendeeList.add(c);
-                        }
+                        attendeeList.addAll(event.getAttendees());
+                        attendees.setItems(attendeeList);
+                    }
+                    // This client owns the event allow edit
+                    if (event.getOwnerName().equals(utils.getOwner().getName())) {
+                        titleText.setVisible(false);
+                        startText.setVisible(false);
+                        stopText.setVisible(false);
+                    } else if(event.getAttendees() != null && event.getAttendees().contains(utils.getOwner().getName())) { // This client is an attendee
+                        titleText.setVisible(false);
+                        startText.setVisible(false);
+                        stopText.setVisible(false);
+                    } else{ // The client isn't the owner and isn't in attendees
+                        titleTextField.setVisible(false);
+                        startTextField.setVisible(false);
+                        stopTextField.setVisible(false);
+                        yesRadio.setDisable(true);
+                        noRadio.setDisable(true);
+                        saveButton.setVisible(false);
+                        saveButton.setDisable(true);
                     }
                 } catch (RemoteException e) {
-                    AlertBox.display("Error", e.getMessage());
+                    AlertBox.display("Error", e.getMessage(),false);
                 }
             } else {
-                AlertBox.display("Error", "No event selected");
+                AlertBox.display("Error", "No event selected",false);
             }
         }
     }
 
     public void close(MouseEvent mouseEvent) {
         Stage stage = (Stage) closeButton.getScene().getWindow();
+        stage.close();
+    }
+
+    public void save(MouseEvent mouseEvent) {
+        Timestamp newStart = utils.convertTime(startTextField.getText());
+        Timestamp newStop = utils.convertTime(stopTextField.getText());
+        Event edittedEvent = new Event(titleTextField.getText(), newStart, newStop, event.getOwner(), event.getOwnerName(), event.getAttendees(), !yesRadio.isSelected(), event.isOpen());
+        utils.editEvent(edittedEvent, event.getStart(), event.getStop());
+        Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
     }
 

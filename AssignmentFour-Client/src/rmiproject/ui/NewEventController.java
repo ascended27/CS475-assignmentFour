@@ -57,7 +57,7 @@ public class NewEventController {
                     notSelectedClientsList.add(c);
                 }
             } catch (RemoteException e) {
-                AlertBox.display("Error", "Failed to load users");
+                AlertBox.display("Error", "Failed to load users",false);
             }
         }
 
@@ -72,7 +72,7 @@ public class NewEventController {
 
     public void save(MouseEvent mouseEvent) {
         if (!allFilledIn()) {
-            AlertBox.display("Error", "All text fields must be filled in");
+            AlertBox.display("Error", "All text fields must be filled in",false);
         } else {
             try {
                 String title = titleTF.getText();
@@ -86,12 +86,12 @@ public class NewEventController {
                 }
 
                 if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
-                    AlertBox.display("Error", "Failed to save event");
+                    AlertBox.display("Error", "Failed to save event",false);
 
                 Stage stage = (Stage) savedButton.getScene().getWindow();
                 stage.close();
             } catch (RemoteException e) {
-                AlertBox.display("Error", "Failed to save event");
+                AlertBox.display("Error", "Failed to save event",false);
             }
         }
     }

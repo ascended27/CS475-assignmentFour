@@ -80,7 +80,7 @@ public class ClientUiController {
             window.setScene(scene);
             window.show();
         } catch (IOException e) {
-            AlertBox.display("Error", "Failed to open new event");
+            AlertBox.display("Error", "Failed to open new event",false);
         }
     }
 
@@ -103,7 +103,7 @@ public class ClientUiController {
                 window.show();
             }
         } catch (IOException e) {
-            AlertBox.display("Error", "Failed to load event");
+            AlertBox.display("Error", "Failed to load event",false);
             e.printStackTrace();
         }
     }

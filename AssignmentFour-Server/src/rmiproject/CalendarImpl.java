@@ -98,8 +98,7 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
      * @return True if the event was scheduled, otherwise false
      * @throws RemoteException If the connection was lost
      */
-    //TODO: Test already made. Debug equality of Events that are made because of a group Event
-    public boolean scheduleEvent(Client owner, List<String> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException {
+    public boolean scheduleEvent(Client owner, String ownerName, List<String> attendees, String title, Timestamp start, Timestamp stop, boolean type) throws RemoteException {
         try {
             rwLock.writeLock().lock();
             boolean canSchedule = false;
@@ -117,99 +116,114 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
          *          between. Otherwise the event would have to have the exact time range as the new event. So just copy
          *          over the params for this call to that event.
          */
-
-            // Find an open event
-            Event found = null;
-            for (Event event : eventList) {
-                if (event.isOpen() && event.getStart().compareTo(start) <= 0 && event.getStop().compareTo(stop) >= 0) {
-                    found = event;
-                    break;
-                }
-            }
-            // If found is null then there is no open event
-            if (found == null)
-                return false;
-
-            // If we have attendees we are in a group event.
-            // If this calendar owner is the same as the event owner then we are need to invite the attendees
-            if (attendees != null && attendees.size() != 0 && owner.getName().equals(this.ownerName)) {
-                CalendarManagerImpl cm = (CalendarManagerImpl) CalendarManagerImpl.getInstance();
-
-                for (String c : attendees) {
-                    calendars.add(cm.getCalendar(c));
-                }
-
-                for (Calendar cal : calendars) {
-                    for (Event event : cal.getEventList()) {
-                        // If the event is open and it starts before or the same time as the new event
-                        // and it ends after or the same time as the new event
-                        if (event.isOpen() && event.getStart().compareTo(start) <= 0 && event.getStop().compareTo(stop) >= 0) {
-                            canSchedule = true;
-                        } else {
-                            canSchedule = false;
-                            break;
+            // Schedule locally
+            if ((attendees == null || attendees.size() == 0) && this.ownerName.equals(ownerName)) {
+                if (eventList.size() > 0) {
+                    for (Event event : eventList) {
+                        if (event.getStart().compareTo(stop) >= 0 || event.getStop().compareTo(start) <= 0) {
+                            eventList.add(new Event(title, start, stop, owner, ownerName, attendees, type, false));
+                            return true;
                         }
                     }
-                    if (!canSchedule) {
-                        // If canSchedule == false then this user is not available so abandon the event.
+                } else {
+                    eventList.add(new Event(title, start, stop, owner, ownerName, attendees, type, false));
+                    return true;
+                }
+            } else {
+                // Find an open event
+                Event found = null;
+                for (Event event : eventList) {
+                    if (event.isOpen() && event.getStart().compareTo(start) <= 0 && event.getStop().compareTo(stop) >= 0) {
+                        found = event;
+                        canSchedule = true;
                         break;
                     }
                 }
-            }
+                // If found is null then there is no open event
+                if (found == null)
+                    return false;
 
-            if (canSchedule && owner.getName().equals(this.ownerName)) {
-                for (Calendar cal : calendars) {
-                    cal.scheduleEvent(owner, attendees, title, start, stop, type);
+                // If we have attendees we are in a group event.
+                // If this calendar owner is the same as the event owner then we are need to invite the attendees
+                if (attendees != null && attendees.size() != 0 && ownerName.equals(this.ownerName)) {
+                    CalendarManagerImpl cm = (CalendarManagerImpl) CalendarManagerImpl.getInstance();
+
+                    for (String c : attendees) {
+                        calendars.add(cm.getCalendar(c));
+                    }
+
+                    for (Calendar cal : calendars) {
+                        for (Event event : cal.getEventList()) {
+                            // If the event is open and it starts before or the same time as the new event
+                            // and it ends after or the same time as the new event
+                            if (event.isOpen() && event.getStart().compareTo(start) <= 0 && event.getStop().compareTo(stop) >= 0) {
+                                canSchedule = true;
+                            } else {
+                                canSchedule = false;
+                                break;
+                            }
+                        }
+                        if (!canSchedule) {
+                            // If canSchedule == false then this user is not available so abandon the event.
+                            break;
+                        }
+                    }
                 }
-            }
 
-            // If the event is open and matches the time range then just use this event
-            if (found.isOpen() && found.getStart().equals(start) && found.getStop().equals(stop)) {
-                // Copy the values to the event
-                found.setOwner(owner);
-                found.setTitle(title);
-                found.setOpen(false);
-                found.setType(type);
-                found.setAttendees(attendees);
-                return true;
-            }
+                if (canSchedule && ownerName.equals(this.ownerName)) {
+                    for (Calendar cal : calendars) {
+                        cal.scheduleEvent(owner, ownerName, attendees, title, start, stop, type);
+                    }
+                }
 
-            // If the event is open and has a start before the new event and a stop after the new event then split it
-            else if (found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().compareTo(stop) > 0) {
-                // Create two new events that are a split between the event and the new event
-                Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), found.getOwnerName(), null, found.isType(), true);
-                Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), found.getOwnerName(), null, found.isType(), true);
-                // Remove the old event
-                eventList.remove(found);
-                // Insert the split open event
-                eventList.add(before);
-                eventList.add(after);
-                // Add the new event
-                eventList.add(new Event(title, start, stop, owner, owner.getName(), attendees, type, false));
-                return true;
-            } else if (found.isOpen() && found.getStart().equals(start) && found.getStop().compareTo(stop) > 0) {
-                Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), found.getOwnerName(), attendees, found.isType(), true);
-                found.setOwner(owner);
-                found.setOwnerName(owner.getName());
-                found.setStop(stop);
-                found.setAttendees(attendees);
-                found.setTitle(title);
-                found.setType(type);
-                found.setOpen(false);
-                eventList.add(after);
-                return true;
-            } else if (found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().equals(stop)) {
-                Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), found.getOwnerName(), attendees, found.isType(), true);
-                found.setStart(start);
-                found.setOwner(owner);
-                found.setOwnerName(owner.getName());
-                found.setStop(stop);
-                found.setAttendees(attendees);
-                found.setTitle(title);
-                found.setType(type);
-                found.setOpen(false);
-                eventList.add(before);
-                return true;
+                // If the event is open and matches the time range then just use this event
+                if (canSchedule && found.isOpen() && found.getStart().equals(start) && found.getStop().equals(stop)) {
+                    // Copy the values to the event
+                    found.setOwner(owner);
+                    found.setTitle(title);
+                    found.setOpen(false);
+                    found.setType(type);
+                    found.setAttendees(attendees);
+                    return true;
+                }
+
+                // If the event is open and has a start before the new event and a stop after the new event then split it
+                else if (canSchedule && found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().compareTo(stop) > 0) {
+                    // Create two new events that are a split between the event and the new event
+                    Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), found.getOwnerName(), null, found.isType(), true);
+                    Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), found.getOwnerName(), null, found.isType(), true);
+                    // Remove the old event
+                    eventList.remove(found);
+                    // Insert the split open event
+                    eventList.add(before);
+                    eventList.add(after);
+                    // Add the new event
+                    eventList.add(new Event(title, start, stop, owner, owner.getName(), attendees, type, false));
+                    return true;
+                } else if (canSchedule && found.isOpen() && found.getStart().equals(start) && found.getStop().compareTo(stop) > 0) {
+                    Event after = new Event(found.getTitle(), stop, found.getStop(), found.getOwner(), found.getOwnerName(), attendees, found.isType(), true);
+                    found.setOwner(owner);
+                    found.setOwnerName(owner.getName());
+                    found.setStop(stop);
+                    found.setAttendees(attendees);
+                    found.setTitle(title);
+                    found.setType(type);
+                    found.setOpen(false);
+                    eventList.add(after);
+                    return true;
+                } else if (canSchedule && found.isOpen() && found.getStart().compareTo(start) < 0 && found.getStop().equals(stop)) {
+                    Event before = new Event(found.getTitle(), found.getStart(), start, found.getOwner(), found.getOwnerName(), attendees, found.isType(), true);
+                    found.setStart(start);
+                    found.setOwner(owner);
+                    found.setOwnerName(owner.getName());
+                    found.setStop(stop);
+                    found.setAttendees(attendees);
+                    found.setTitle(title);
+                    found.setType(type);
+                    found.setOpen(false);
+                    eventList.add(before);
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -217,6 +231,76 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
             rwLock.writeLock().unlock();
         }
         return false;
+    }
+
+    public boolean editEvent(String ownerName, String title, Timestamp start, Timestamp stop, Timestamp newStart, Timestamp newStop, boolean type) throws RemoteException {
+        CalendarManager cm = CalendarManagerImpl.getInstance();
+        Event toEdit = retrieveEvent(start, stop);
+        boolean canSchedule = false;
+
+        // If the owner or an attendee isn't the one editing then quit
+        if (!toEdit.getOwnerName().equals(ownerName) && !toEdit.getAttendees().contains(ownerName)) {
+            return false;
+        }
+
+        // Can the user schedule
+        for (Event event : eventList) {
+            // If new stop is before this event starts
+            if (event.getStart().compareTo(newStop) >= 0) {
+                canSchedule = true;
+            } else if (event.getStop().compareTo(newStart) <= 0) { // If new start is after this event ends
+                canSchedule = true;
+            } else if (event.isOpen()) {
+                canSchedule = true;
+            }
+
+        }
+        // Can the attendees schedule
+        for (String attendee : toEdit.getAttendees()) {
+            for (Event event : cm.getCalendar(attendee).getEventList()) {
+                // If new stop is before this event starts
+                if (event.getStart().compareTo(newStop) >= 0) {
+                    canSchedule = true;
+                } else if (event.getStop().compareTo(newStart) <= 0) { // If new start is after this event ends
+                    canSchedule = true;
+                } else if (event.isOpen()) {
+                    canSchedule = true;
+                }
+
+            }
+        }
+
+        if (canSchedule) {
+            // Update attendees' calendars
+            for (String attendee : toEdit.getAttendees()) {
+                ConcurrentLinkedQueue<Event> events = cm.getCalendar(attendee).getEventList();
+                for(Event event : events){
+                    if(event.getStart().equals(toEdit.getStart()) && event.getStop().equals(toEdit.getStop()))
+                        events.remove(event);
+
+                }
+                if (toEdit.getStart().equals(newStart) && toEdit.getStop().equals(newStop)) {
+                    toEdit.setTitle(title);
+                    toEdit.setType(type);
+                    cm.getCalendar(attendee).getEventList().add(toEdit);
+                } else {
+                    cm.getCalendar(attendee).scheduleEvent(toEdit.getOwner(), toEdit.getOwnerName(), toEdit.getAttendees(), title, newStart, newStop, type);
+                }
+            }
+            // Remove the old event
+            eventList.remove(toEdit);
+            // Schedule the new event
+            if (toEdit.getStart().equals(newStart) && toEdit.getStop().equals(newStop)) {
+                toEdit.setTitle(title);
+                toEdit.setType(type);
+                cm.getCalendar(toEdit.getOwnerName()).getEventList().add(toEdit);
+                return true;
+            } else {
+                return scheduleEvent(toEdit.getOwner(), toEdit.getOwnerName(), toEdit.getAttendees(), title, newStart, newStop, type);
+            }
+        } else return false;
+
+
     }
 
     /**

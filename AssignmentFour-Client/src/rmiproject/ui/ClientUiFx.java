@@ -69,6 +69,7 @@ public class ClientUiFx extends Application {
                         Naming.rebind("rmi://localhost:6246/ClientService-" + utils.getSelectedClient(), client);
                         // Refresh the user's calendar's client object
                         Calendar cal = utils.getCalendar(username);
+                        utils.setOwner(client);
                         if(cal != null) {
                             cal.setOwner(client);
                             ConcurrentLinkedQueue<Event> events = cal.getEventList();
