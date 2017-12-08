@@ -1,5 +1,8 @@
 package rmiproject;
 
+import javafx.application.Platform;
+import rmiproject.ui.AlertBox;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -34,12 +37,27 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
      * @param event The event to notify the user with
      */
     public void notify(Event event) throws RemoteException {
-        if (event.isOpen())
-            System.out.printf("Open Event: \n\tStart: %s\n\tStop: %s\n\n", event.getStart().toString(), event.getStop().toString());
+        if (event.isOpen()) {
+            String s = String.format("Open Event: \n\tStart: %s\n\tStop: %s\n\n", event.getStart().toString(), event.getStop().toString());
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    AlertBox.display("Event Passed", s, false);
+                }
+            });
+        }
         else {
-            System.out.printf("Event: %s\n\tStart: %s\n\tStop: %s\n\tOwner: %s\n\tOpen: %b\n\tPublic: %b\n\tAttendees: %s\n\n",
+            String s = String.format("Event: %s\n\tStart: %s\n\tStop: %s\n\tOwner: %s\n\tOpen: %b\n\tPublic: %b\n\tAttendees: %s\n\n",
                     event.getTitle(), event.getStart().toString(), event.getStop().toString(),
                     event.getOwner().getName(), event.isOpen(), event.isType(), event.getAttendees().toString());
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    AlertBox.display("Event Passed", s, false);
+                }
+            });
         }
 
     }
