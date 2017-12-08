@@ -43,7 +43,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AlertBox.display("Event Passed", s, false);
+                    AlertBox.display("Reminder", s, false);
                 }
             });
         }
@@ -55,7 +55,7 @@ public class ClientImpl extends UnicastRemoteObject implements Client {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    AlertBox.display("Event Passed", s, false);
+                    AlertBox.display("Reminder", s, false);
                 }
             });
         }
