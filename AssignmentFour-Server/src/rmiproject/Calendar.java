@@ -81,16 +81,56 @@ public interface Calendar extends Remote {
      */
     boolean insertOpenEvent(Client owner, Timestamp start, Timestamp stop) throws RemoteException;
 
+    /**
+     * This method will serve to edit an event by changing its state with the passed in values.
+     * @param title The new title for the event
+     * @param ownerName The owner of the event
+     * @param start The start time of the open event
+     * @param stop  The stop time of the open event
+     * @param newStart The old start time of the open event
+     * @param newStop The old stop time of the open event
+     * @param type Whether the event should be public or not
+     * @return true if the edit was successful. False otherwise.
+     * @throws RemoteException
+     */
     public boolean editEvent(String ownerName, String title, Timestamp start, Timestamp stop, Timestamp newStart, Timestamp newStop, boolean type) throws RemoteException;
 
+    /**
+     * This method will start a new Clock instance that will run in a separate Thread, to see if any
+     * events are in the close future.
+     * @param owner The owner of this Calendar
+     * @return Returns true upon successful starting, false otherwise. False is usually returned
+     * if the owner passed in is not actually the owner of this Calendar.
+     * @throws RemoteException
+     */
     boolean startClock(Client owner) throws RemoteException;
 
+    /**
+     * This method will kill the Clock and its related Thread.
+     * @param owner The owner of the Calendar where the Clock resides.
+     * @throws RemoteException
+     */
     void killClock(Client owner) throws RemoteException;
 
+    /**
+     * This method will return this Calendar's eventList
+     * @return This Clandar's eventList
+     * @throws RemoteException
+     */
     ConcurrentLinkedQueue<Event> getEventList() throws RemoteException;
 
+    /**
+     * Returns this Calendar's owner.
+     * @return This Calendar's Client owner.
+     * @throws RemoteException
+     */
     Client getOwner() throws RemoteException;
 
+    /**
+     * Will change this Calendar's Client owner to the new Client passed in.
+     * @param client The new Client owner for this Calendar.
+     * @throws RemoteException
+     */
     void setOwner(Client client) throws RemoteException;
 
 }
