@@ -24,12 +24,16 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
 
     List<CalendarImpl> calendars;
     List<String> users;
+
+    //CalendarManager should be a Singleton. Don't want extraneous instances hanging around
     private static CalendarManagerImpl theInstance;
 
+    //This method returns null for now, since it's not being used.
     public Calendar makeCalendar(Client user) {
         return null;
     }
 
+    //Constructor for class. Inits calendar list and user list.
     protected CalendarManagerImpl() throws RemoteException {
         theInstance = this;
         calendars = new ArrayList<>();
@@ -37,6 +41,7 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
         System.out.println("New CalendarManager");
     }
 
+    //This method returns the Singleton instance
     public static CalendarManager getInstance() throws RemoteException {
         if (theInstance == null)
             theInstance = new CalendarManagerImpl();
@@ -58,12 +63,16 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
         CalendarImpl toReturn = null;
         System.out.println("New Client Request: " + user.getName());
         for (CalendarImpl cal : calendars) {
+
+            //Check if have same name
             if (cal.getOwnerName().equals(user.getName())) {
                 toReturn = cal;
             }
         }
 
         if (toReturn == null) {
+
+            //If no existing Calendars, make new instance and add it to Calendar.
             toReturn = new CalendarImpl(user);
             users.add(user.getName());
             System.out.println("New User: " + user.getName());
@@ -73,6 +82,8 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
         return toReturn;
     }
 
+    //Overloaded method will simply return the given instance if given a
+    //username String.
     public CalendarImpl getCalendar(String username) throws RemoteException {
 
         CalendarImpl toReturn = null;
@@ -85,11 +96,13 @@ public class CalendarManagerImpl extends UnicastRemoteObject implements Calendar
         return toReturn;
     }
 
+    //Returns this CalendarManager's username Strings.
     @Override
     public List<String> allUsers() throws RemoteException {
         return users;
     }
 
+    //Search and return Client by username
     public Client lookup(String username) throws RemoteException{
         for(CalendarImpl cal : calendars){
             if(cal.getOwnerName().equals(username))
