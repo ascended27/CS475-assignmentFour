@@ -281,7 +281,12 @@ public class Event implements Serializable {
      * @return This Event's owner's name.
      */
     public String getOwnerName() {
-        return ownerName;
+        try {
+            rwLock.writeLock().lock();
+            return this.ownerName;
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
     /**
@@ -289,6 +294,11 @@ public class Event implements Serializable {
      * @param ownerName This Event's new owner's name.
      */
     public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+        try {
+            rwLock.writeLock().lock();
+            this.ownerName = ownerName;
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 }
