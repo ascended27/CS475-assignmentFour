@@ -89,22 +89,26 @@ public class NewEventController {
                 if(start == null || stop == null){
                     AlertBox.display("Error","Time must be of format MM/DD/YYYY HH:SS",false);
                 } else {
+                    if(start.compareTo(stop) <= 0) {
 
-                    boolean isPrivate = !yesPrivate.isSelected();
-                    ArrayList<String> attendees = new ArrayList<>();
+                        boolean isPrivate = !yesPrivate.isSelected();
+                        ArrayList<String> attendees = new ArrayList<>();
 
-                    // Get the selected clients
-                    for (String user : selectedClientsList) {
-                        attendees.add(user);
+                        // Get the selected clients
+                        for (String user : selectedClientsList) {
+                            attendees.add(user);
+                        }
+
+                        // Attempt to schedule the event and display an error if it fails
+                        if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
+                            AlertBox.display("Error", "Failed to save event", false);
+
+                        // Close the window
+                        Stage stage = (Stage) savedButton.getScene().getWindow();
+                        stage.close();
+                    } else{
+                        AlertBox.display("Error","Start must be before Stop",false);
                     }
-
-                    // Attempt to schedule the event and display an error if it fails
-                    if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
-                        AlertBox.display("Error", "Failed to save event", false);
-
-                    // Close the window
-                    Stage stage = (Stage) savedButton.getScene().getWindow();
-                    stage.close();
                 }
             } catch (RemoteException e) {
                 AlertBox.display("Error", "Failed to save event", false);

@@ -163,14 +163,18 @@ public class RetrievedEventController {
         if(newStart == null || newStop == null){
             AlertBox.display("Error","Time must be of format MM/DD/YYYY HH:SS",false);
         } else {
-            // Make a new event that has the edited values
-            Event editedEvent = new Event(titleTextField.getText(), newStart, newStop, event.getOwner(), event.getOwnerName(), event.getAttendees(), !yesRadio.isSelected(), event.isOpen());
-            // Save the edited event
-            utils.editEvent(editedEvent, event.getStart(), event.getStop());
+            if(newStart.compareTo(newStop) <= 0) {
+                // Make a new event that has the edited values
+                Event editedEvent = new Event(titleTextField.getText(), newStart, newStop, event.getOwner(), event.getOwnerName(), event.getAttendees(), !yesRadio.isSelected(), event.isOpen());
+                // Save the edited event
+                utils.editEvent(editedEvent, event.getStart(), event.getStop());
 
-            // Close the stage
-            Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.close();
+                // Close the stage
+                Stage stage = (Stage) saveButton.getScene().getWindow();
+                stage.close();
+            } else{
+                AlertBox.display("Error","Start must be before End",false);
+            }
         }
     }
 
