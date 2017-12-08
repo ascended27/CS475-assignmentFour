@@ -35,9 +35,9 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
         try {
             rwLock.readLock().lock();
             Event toReturn = null;
-            for (Event event : eventList) {
+            for (Event event : CalendarManagerImpl.getInstance().getCalendar(userName).getEventList()) {
                 if (event.getStart().equals(start) && event.getStop().equals(end)) {
-                    if(event.getOwnerName().equals(userName) || event.getAttendees().contains(userName))
+                    if (event.getOwnerName().equals(userName) || event.getAttendees().contains(userName))
                         toReturn = event;
                     break;
                 }
@@ -66,18 +66,6 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
             boolean canSchedule = false;
             ArrayList<CalendarImpl> calendars = new ArrayList<>();
 
-        /*
-         * If owner is the owner of this calendar then we are creating a new event for that user.
-         * If there are any attendees then we need to check to see if they are available for this event.
-         *      If they are then flip a flag saying everyone is good.
-         * For each event x in this calendar. Check to see if there are any conflicting events with this one.
-         *      If there are then return false. This event can't be scheduled.
-         *      Otherwise if there are attendees and everyone is available then call this method on their calendars
-         *          with the same parameters. Then check this calendar's open events. If there is an open event that has
-         *          a start before this new event and an end after then split that open event and insert this new event
-         *          between. Otherwise the event would have to have the exact time range as the new event. So just copy
-         *          over the params for this call to that event.
-         */
             // Schedule locally
             if ((attendees == null || attendees.size() == 0) && this.ownerName.equals(ownerName)) {
                 if (eventList.size() > 0) {
@@ -236,8 +224,8 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
             // Update attendees' calendars
             for (String attendee : toEdit.getAttendees()) {
                 ConcurrentLinkedQueue<Event> events = cm.getCalendar(attendee).getEventList();
-                for(Event event : events){
-                    if(event.getStart().equals(toEdit.getStart()) && event.getStop().equals(toEdit.getStop()))
+                for (Event event : events) {
+                    if (event.getStart().equals(toEdit.getStart()) && event.getStop().equals(toEdit.getStop()))
                         events.remove(event);
 
                 }
@@ -335,6 +323,34 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
     @Override
     public void setOwner(Client client) throws RemoteException {
         this.owner = client;
+    }
+
+    @Override
+    public boolean deleteEvent(String username, Timestamp start, Timestamp stop) throws RemoteException {
+        Event toDelete = retrieveEvent(username, start, stop);
+
+        if (toDelete == null)
+            return false;
+
+        // If the user is the owner or in the attendees they can delete
+        if (toDelete.getOwnerName().equals(username) || (toDelete.getAttendees() != null && toDelete.getAttendees().contains(username))) {
+            for (Event event : CalendarManagerImpl.getInstance().getCalendar(username).getEventList()) {
+                if (event.getStart().equals(start) && event.getStop().equals(stop))
+                    CalendarManagerImpl.getInstance().getCalendar(username).getEventList().remove(event);
+            }
+
+            // If username is the owner of this calendar then check attendees.
+            if (username.equals(ownerName)) {
+                if (toDelete.getAttendees() != null && toDelete.getAttendees().size() > 0) {
+                    for (String clientName : toDelete.getAttendees()) {
+                        deleteEvent(clientName, start, stop);
+                    }
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 
     //This method will start a new Thread that will run the Clock

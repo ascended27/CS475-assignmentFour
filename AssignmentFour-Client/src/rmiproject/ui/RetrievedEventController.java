@@ -40,6 +40,8 @@ public class RetrievedEventController {
     public ToggleGroup privateGroup;
     @FXML
     public RadioButton noRadio;
+    @FXML
+    public Button deleteButton;
 
     private Util utils;
     private Timestamp start;
@@ -81,6 +83,9 @@ public class RetrievedEventController {
                                 attendees.setVisible(false);
                                 yesRadio.setVisible(false);
                                 noRadio.setVisible(false);
+                            } else{
+                                titleText.setText(event.getTitle());
+                                titleTextField.setText(event.getTitle());
                             }
                         }
                         // Else they can see everything
@@ -113,6 +118,7 @@ public class RetrievedEventController {
                             titleText.setVisible(false);
                             startText.setVisible(false);
                             stopText.setVisible(false);
+                            deleteButton.setVisible(false);
                         } else { // The client isn't the owner and isn't in attendees
                             titleTextField.setVisible(false);
                             startTextField.setVisible(false);
@@ -121,6 +127,7 @@ public class RetrievedEventController {
                             noRadio.setDisable(true);
                             saveButton.setVisible(false);
                             saveButton.setDisable(true);
+                            deleteButton.setVisible(false);
                         }
 
                     } else {
@@ -171,5 +178,29 @@ public class RetrievedEventController {
     // Set the stop of the event
     public void setStop(Timestamp stop) {
         this.stop = stop;
+    }
+
+    // Deletes the selected event
+    public void delete(MouseEvent mouseEvent) {
+        // Get start and stop
+        Timestamp start = utils.convertTime(startTextField.getText());
+        Timestamp stop = utils.convertTime(stopTextField.getText());
+        try {
+            // Delete the event
+            utils.deleteEvent(utils.getOwner().getName(), start, stop);
+
+            List<EventRow> eventTable = utils.getTableList();
+            eventTable.clear();
+            for(Event event : utils.getEventList(utils.getOwner())){
+                eventTable.add(new EventRow(event.getOwnerName(),event.getTitle(),event.getStart(),event.getStop()));
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            AlertBox.display("Error", "Failed to delete event", false);
+        }
+
+        // Close the stage
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        stage.close();
     }
 }

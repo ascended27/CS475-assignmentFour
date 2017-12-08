@@ -98,4 +98,13 @@ public interface Calendar extends Remote {
      */
     void setOwner(Client client) throws RemoteException;
 
+    /**
+     * Deletes the event at the passed time
+     * @param username The name of the owner or attendee
+     * @param start The start time of the event
+     * @param stop The stop time of the event
+     * @return The success of the deletion
+     * @throws RemoteException
+     */
+    boolean deleteEvent(String username, Timestamp start, Timestamp stop) throws RemoteException;
 }

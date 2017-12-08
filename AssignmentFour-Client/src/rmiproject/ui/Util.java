@@ -144,6 +144,14 @@ public class Util {
         }
     }
 
+    public boolean deleteEvent(String username, Timestamp start, Timestamp stop){
+        try{
+            return cm.getCalendar(username).deleteEvent(username,start,stop);
+        } catch(RemoteException e){
+            return  false;
+        }
+    }
+
     // Kills the clients server clock that notifies of an upcoming event
     public boolean killClock() {
         try {
@@ -210,6 +218,12 @@ public class Util {
     public void registerTableList(ObservableList<EventRow> list) {
         this.observableList = list;
     }
+
+    // Getter for the event table
+    public ObservableList<EventRow> getTableList() {
+        return this.observableList;
+    }
+
 
     // Setter for owner
     public void setOwner(Client client) {
