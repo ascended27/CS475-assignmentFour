@@ -370,11 +370,13 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
         }
     }
 
+    //This method will change this Calendar's owner.
     @Override
     public void setOwner(Client client) throws RemoteException {
         this.owner = client;
     }
 
+    //This method will start a new Thread that will run the Clock
     public boolean startClock(Client owner) throws RemoteException {
         if (owner.getName().equals(this.owner.getName())) {
             Clock c = new Clock(this);
@@ -385,16 +387,19 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
         return false;
     }
 
+    //This method will kill the Clock for the owner passed in
     public void killClock(Client owner) throws RemoteException {
         if (owner.getName().equals(this.owner.getName())) {
             clockThread.interrupt();
         }
     }
 
+    //This method will return this Calendar's owner's name
     public String getOwnerName() {
         return ownerName;
     }
 
+    //This method will change this Calendar's owner's name
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
     }

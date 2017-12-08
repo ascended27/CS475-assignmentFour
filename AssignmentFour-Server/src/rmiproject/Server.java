@@ -13,6 +13,7 @@ public class Server {
     private static Registry registry;
 
     //TODO: Test this?
+    //This is a testing class
     public static void main(String argv[]) {
         try {
             registry = LocateRegistry.createRegistry(6246);
