@@ -80,25 +80,32 @@ public class NewEventController {
             AlertBox.display("Error", "All text fields must be filled in", false);
         } else {
             try {
+
                 // Get the fields
                 String title = titleTF.getText();
                 Timestamp start = utils.convertTime(startTF.getText());
                 Timestamp stop = utils.convertTime(stopTF.getText());
-                boolean isPrivate = !yesPrivate.isSelected();
-                ArrayList<String> attendees = new ArrayList<>();
 
-                // Get the selected clients
-                for (String user : selectedClientsList) {
-                    attendees.add(user);
+                if(start == null || stop == null){
+                    AlertBox.display("Error","Time must be of format MM/DD/YYYY HH:SS",false);
+                } else {
+
+                    boolean isPrivate = !yesPrivate.isSelected();
+                    ArrayList<String> attendees = new ArrayList<>();
+
+                    // Get the selected clients
+                    for (String user : selectedClientsList) {
+                        attendees.add(user);
+                    }
+
+                    // Attempt to schedule the event and display an error if it fails
+                    if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
+                        AlertBox.display("Error", "Failed to save event", false);
+
+                    // Close the window
+                    Stage stage = (Stage) savedButton.getScene().getWindow();
+                    stage.close();
                 }
-
-                // Attempt to schedule the event and display an error if it fails
-                if (!utils.scheduleEvent(new Event(title, start, stop, utils.getOwner(), utils.getOwner().getName(), attendees, isPrivate, false)))
-                    AlertBox.display("Error", "Failed to save event", false);
-
-                // Close the window
-                Stage stage = (Stage) savedButton.getScene().getWindow();
-                stage.close();
             } catch (RemoteException e) {
                 AlertBox.display("Error", "Failed to save event", false);
             }
