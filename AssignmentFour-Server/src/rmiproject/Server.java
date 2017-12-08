@@ -4,11 +4,6 @@ import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-/**
- * This class will act as the rmiproject that interacts
- * with all the clients. It will handle the creation
- * of new calendars and the creation of events.
- */
 public class Server {
     private static Registry registry;
 

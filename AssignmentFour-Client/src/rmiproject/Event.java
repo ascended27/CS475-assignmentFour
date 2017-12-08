@@ -6,11 +6,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/**
- * The Event class is a container for all the event attributes.
- * Contains setters and getters for the event attributes which
- * have read/write locks to assist with synchronicity.
- */
 public class Event implements Serializable {
 
     private String title;
@@ -25,8 +20,17 @@ public class Event implements Serializable {
     private boolean type;
     private boolean passed;
 
-    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    public ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
+    /** Constructor
+     * @param title This Event's title
+     * @param start This Event's start time
+     * @param stop This Event's stop time
+     * @param owner This Event's Client owner
+     * @param attendees This Event's attendees
+     * @param type This Event's privacy type
+     * @param open This Event's open condition
+     */
     public Event(String title, Timestamp start, Timestamp stop, Client owner, String ownerName, List<String> attendees, boolean type, boolean open) {
         this.title = title;
         this.start = start;
@@ -39,6 +43,10 @@ public class Event implements Serializable {
         this.passed = false;
     }
 
+    /**
+     * Returns this Event's title. Uses locking mechanisms to make safe read.
+     * @return This Event's title
+     */
     public String getTitle() {
         String toReturn;
         try {
@@ -50,6 +58,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Set's this Event's title. Uses locking mechanisms to safely write.
+     * @param title This Event's title.
+     */
     public void setTitle(String title) {
         try {
             rwLock.writeLock().lock();
@@ -59,6 +71,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Return's this Event's start time. Uses locking mechanisms to safely read.
+     * @return This Event's start time.
+     */
     public Timestamp getStart() {
         Timestamp toReturn;
         try {
@@ -70,6 +86,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Sets this Event's start time. Uses locking mechanisms to safely write.
+     * @param start This Event's new start time.
+     */
     public void setStart(Timestamp start) {
         try {
             rwLock.writeLock().lock();
@@ -79,6 +99,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Returns this Event's stop time. Uses locking mechanisms to safely read.
+     * @return This Event's stop time.
+     */
     public Timestamp getStop() {
         Timestamp toReturn;
         try {
@@ -90,6 +114,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Sets this Event's stop time. Uses locking mechanisms to safely write.
+     * @param stop This Event's new stop time
+     */
     public void setStop(Timestamp stop) {
         try {
             rwLock.writeLock().lock();
@@ -99,6 +127,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Returns this Event's owner. Uses locking mechanisms to safely read.
+     * @return This Event's owner
+     */
     public Client getOwner() {
         Client toReturn;
         try {
@@ -110,6 +142,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Sets this Event's Client owner. Uses locking mechanisms to safely write.
+     * @param owner This Event's new Client owner.
+     */
     public void setOwner(Client owner) {
         try {
             rwLock.writeLock().lock();
@@ -119,6 +155,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Returns a list of this Event's attendees. Uses locking mechanisms to safely read.
+     * @return A list of this Event's attendees.
+     */
     public List<String> getAttendees() {
         List<String> toReturn;
         try {
@@ -130,6 +170,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Sets this Event's attendees. Uses locking mechanisms to safely write.
+     * @param attendees This Event's new attendees.
+     */
     public void setAttendees(List<String> attendees) {
         try {
             rwLock.writeLock().lock();
@@ -139,6 +183,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Checks whether this Event is an open Event. Uses locking mechanisms to safely read.
+     * @return true if this Event is open, false otherwise.
+     */
     public boolean isOpen() {
         boolean toReturn;
         try {
@@ -150,6 +198,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Set whether this Event is open or regular. Uses locking mechanisms to safely write.
+     * @param open Whether this Event will be open or regular.
+     */
     public void setOpen(boolean open) {
         try {
             rwLock.writeLock().lock();
@@ -159,6 +211,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Returns whether this Event is private or public. Uses locking mechanisms to safely read.
+     * @return True if this Event is public, false otherwise.
+     */
     public boolean isType() {
         boolean toReturn;
         try {
@@ -170,6 +226,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Set whether this Event is public or private. Uses locking mechanisms to safely write.
+     * @param type Whether this Event will be public or private.
+     */
     public void setType(boolean type) {
         try {
             rwLock.writeLock().lock();
@@ -179,6 +239,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Checks whether this Event has already been notified to the user. Uses locking mechanisms to safely read.
+     * @return Whether this Event has already been notified to the user.
+     */
     public boolean hasPassed() {
         boolean toReturn;
         try {
@@ -190,6 +254,10 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Sets whether this Event has already been notified to the user. Uses locking mechanisms to safely write.
+     * @param passed Whether this Event was notified to the user.
+     */
     public void setPassed(boolean passed) {
         try {
             rwLock.writeLock().lock();
@@ -199,11 +267,29 @@ public class Event implements Serializable {
         }
     }
 
+    /**
+     * Returns this Event's owner's name.
+     * @return This Event's owner's name.
+     */
     public String getOwnerName() {
-        return ownerName;
+        try {
+            rwLock.writeLock().lock();
+            return this.ownerName;
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 
+    /**
+     * Sets this Event's owner's name.
+     * @param ownerName This Event's new owner's name.
+     */
     public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
+        try {
+            rwLock.writeLock().lock();
+            this.ownerName = ownerName;
+        } finally {
+            rwLock.writeLock().unlock();
+        }
     }
 }

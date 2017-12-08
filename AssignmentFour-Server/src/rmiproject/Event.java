@@ -6,15 +6,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/**
- * The Event class will contain information
- * about an event such as: Title, Name, Time,
- * and Attendees.
- * <p>
- * This class will need to be synchronous. The owner
- * may need to write to their calendar while another
- * user attempting to reading.
- */
 public class Event implements Serializable {
 
     private String title;
