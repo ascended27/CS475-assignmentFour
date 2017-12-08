@@ -379,7 +379,7 @@ public class CalendarImpl extends UnicastRemoteObject implements Calendar {
         if (owner.getName().equals(this.owner.getName())) {
             Clock c = new Clock(this);
             clockThread = new Thread(c);
-//            clockThread.start();
+            clockThread.start();
             return true;
         }
         return false;

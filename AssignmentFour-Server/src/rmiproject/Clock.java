@@ -17,6 +17,17 @@ public class Clock implements Runnable {
     }
 
     private boolean running = true;
+    private final long MINS15 = 15*60*1000;
+
+    private boolean checkNear(Timestamp ts, Timestamp future)
+    {
+        return future.after(ts) && timeDiff(ts, future) <= MINS15;
+    }
+
+    private long timeDiff(Timestamp one, Timestamp two)
+    {
+        return Math.abs(one.getTime() - two.getTime());
+    }
 
     @Override
     public void run() {
@@ -35,7 +46,7 @@ public class Clock implements Runnable {
 
                 if (eventList.size() > 0)
                     for (Event event : eventList) {
-                        if (ts.compareTo(event.getStart()) >= 0 && !event.hasPassed()) {
+                        if (checkNear(ts, event.getStart()) && !event.hasPassed()) {
                             // Notify user
                             calendar.getOwner().notify(event);
 
