@@ -30,7 +30,17 @@ public interface Client extends Remote {
      */
     void notify(Event event) throws RemoteException;
 
+    /**
+     * Returns this Client's name.
+     * @return This Client's name
+     * @throws RemoteException
+     */
     String getName() throws RemoteException;
 
+    /**
+     * Sets this Client's name.
+     * @param name This Client's new name.
+     * @throws RemoteException
+     */
     void setName(String name) throws RemoteException;
 }
