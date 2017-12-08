@@ -1,14 +1,13 @@
 package rmiproject.ui;
 
-import javafx.scene.control.*;
-import rmiproject.Client;
-import rmiproject.Event;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import rmiproject.Event;
 
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
@@ -50,19 +49,28 @@ public class RetrievedEventController {
 
     @FXML
     public void initialize() {
+        // Get an instance of the utils
         utils = Util.getInstance();
         if (utils != null) {
+            // Get the selected event row from utils
             EventRow er = utils.getRetrievedEventRow();
             if (er != null) {
                 try {
+                    // If the selected client isn't null then get its name
                     if (utils.getSelectedClient() == null)
                         utils.setSelectedClient(utils.getOwner().getName());
+                    // Get the event for the selected client
                     event = utils.retrieveEventForClient(utils.getSelectedClient(), utils.getRetrievedEventRow().getStart(), utils.getRetrievedEventRow().getStop());
+                    // If the event was retrieved then display it
                     if (event != null) {
+                        // If it is a private event and this user isn't an owner then display private event for the title
                         if (!event.isType() && !event.getOwnerName().equals(utils.getOwner().getName())) {
                             titleText.setText("Private Event");
                             titleTextField.setText("Private Event");
-                        } else if (event.getAttendees() != null && event.getAttendees().size() != 0) {
+                        }
+                        // If the event has attendees
+                        else if (event.getAttendees() != null && event.getAttendees().size() != 0) {
+                            // and if the user is isn't in those attendees don't show them anything besides time
                             if (!event.getOwnerName().equals(utils.getOwner().getName()) && !event.getAttendees().contains(utils.getOwner().getName())) {
                                 titleText.setText("Group Event");
                                 titleTextField.setText("Group Event");
@@ -74,18 +82,23 @@ public class RetrievedEventController {
                                 yesRadio.setVisible(false);
                                 noRadio.setVisible(false);
                             }
-                        } else {
+                        }
+                        // Else they can see everything
+                        else {
                             titleText.setText(event.getTitle());
                             titleTextField.setText(event.getTitle());
                         }
+                        // Set the private field
                         if (!event.isType()) {
                             yesRadio.setSelected(true);
                         } else noRadio.setSelected(true);
+                        // Set the other fields
                         ownerText.setText(event.getOwnerName());
                         startText.setText(event.getStart().toString());
                         stopText.setText(event.getStop().toString());
                         startTextField.setText(event.getStart().toString());
                         stopTextField.setText(event.getStop().toString());
+                        // Set the attendees
                         List<String> aList = event.getAttendees();
                         if (aList != null) {
                             attendeeList.addAll(event.getAttendees());
@@ -111,6 +124,7 @@ public class RetrievedEventController {
                         }
 
                     } else {
+                        // If the event is null then just print the event row
                         startText.setText(er.getStart().toString());
                         stopText.setText(er.getStop().toString());
                         ownerText.setVisible(false);
@@ -120,8 +134,6 @@ public class RetrievedEventController {
                         attendees.setVisible(false);
                         yesRadio.setVisible(false);
                         noRadio.setVisible(false);
-                        er.getStop();
-                        AlertBox.display("Error", "No event selected", false);
                     }
                 } catch (RemoteException e) {
                     AlertBox.display("Error", e.getMessage(), false);
@@ -130,24 +142,33 @@ public class RetrievedEventController {
         }
     }
 
+    // Closes the window
     public void close(MouseEvent mouseEvent) {
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
     }
 
+    // Saves the event after editing
     public void save(MouseEvent mouseEvent) {
+        // Get the new time
         Timestamp newStart = utils.convertTime(startTextField.getText());
         Timestamp newStop = utils.convertTime(stopTextField.getText());
-        Event edittedEvent = new Event(titleTextField.getText(), newStart, newStop, event.getOwner(), event.getOwnerName(), event.getAttendees(), !yesRadio.isSelected(), event.isOpen());
-        utils.editEvent(edittedEvent, event.getStart(), event.getStop());
+        // Make a new event that has the edited values
+        Event editedEvent = new Event(titleTextField.getText(), newStart, newStop, event.getOwner(), event.getOwnerName(), event.getAttendees(), !yesRadio.isSelected(), event.isOpen());
+        // Save the edited event
+        utils.editEvent(editedEvent, event.getStart(), event.getStop());
+
+        // Close the stage
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
     }
 
+    // Set the start of the event
     public void setStart(Timestamp start) {
         this.start = start;
     }
 
+    // Set the stop of the event
     public void setStop(Timestamp stop) {
         this.stop = stop;
     }

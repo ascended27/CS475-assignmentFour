@@ -2,6 +2,9 @@ package rmiproject.ui;
 
 import java.sql.Timestamp;
 
+/**
+ * Event row is a wrapper for events that is used to display events in a tablel
+ */
 public class EventRow {
     private String ownerName;
     private String title;

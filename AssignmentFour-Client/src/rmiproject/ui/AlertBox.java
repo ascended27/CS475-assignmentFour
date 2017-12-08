@@ -26,20 +26,19 @@ public class AlertBox {
         label.setFont(Font.font("GT Walsheim", 14));
         Label mytitle = new Label();
         mytitle.setFont(Font.font("GT Walsheim", 18));
-        mytitle.setText(title+"\n\n");
+        mytitle.setText(title + "\n\n");
         label.setText(message);
 
 
         // Notify the user of fatal error
-        if(fatal)
-        {
-            label.setText(message+"\nThis is a FATAL error. The program will exit once you hit Close.");
+        if (fatal) {
+            label.setText(message + "\nThis is a FATAL error. The program will exit once you hit Close.");
         }
 
         // Setup the close button
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> {
-            if(fatal)
+            if (fatal)
                 System.exit(1);
             else
                 window.close();

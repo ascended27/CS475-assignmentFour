@@ -7,13 +7,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * The Event class will contain information
- * about an event such as: Title, Name, Time,
- * and Attendees.
- * <p>
- * This class will need to be synchronous. The owner
- * may need to write to their calendar while another
- * user attempting to reading.
+ * The Event class is a container for all the event attributes.
+ * Contains setters and getters for the event attributes which
+ * have read/write locks to assist with synchronicity.
  */
 public class Event implements Serializable {
 
@@ -29,17 +25,8 @@ public class Event implements Serializable {
     private boolean type;
     private boolean passed;
 
-    public ReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
-    /**
-     * @param title
-     * @param start
-     * @param stop
-     * @param owner
-     * @param attendees
-     * @param type
-     * @param open
-     */
     public Event(String title, Timestamp start, Timestamp stop, Client owner, String ownerName, List<String> attendees, boolean type, boolean open) {
         this.title = title;
         this.start = start;

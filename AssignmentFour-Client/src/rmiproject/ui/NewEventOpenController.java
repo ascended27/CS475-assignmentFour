@@ -25,8 +25,10 @@ public class NewEventOpenController {
     @FXML
     public Button nextButton;
 
+    // Moves to the next window
     public void next(MouseEvent mouseEvent) {
         try {
+            // Loads the appropriate event scheduler
             Parent root;
             Stage window = new Stage();
             if (yesOpen.isSelected())
@@ -37,16 +39,18 @@ public class NewEventOpenController {
             window.setTitle("New Event Open");
             window.setResizable(false);
 
+            // Shows the window
             Scene scene = new Scene(root);
             window.setScene(scene);
             Stage stage = (Stage) nextButton.getScene().getWindow();
             stage.close();
             window.show();
         } catch (IOException e) {
-            AlertBox.display("Error", "Failed to open new event",false);
+            AlertBox.display("Error", "Failed to open new event", false);
         }
     }
 
+    // Closes this window
     public void cancel(MouseEvent mouseEvent) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
